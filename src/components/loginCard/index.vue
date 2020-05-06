@@ -43,6 +43,7 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 export default {
 	data() {
 		return {
@@ -71,6 +72,9 @@ export default {
 		}
 	},
 	methods: {
+		...mapMutations('user', [
+			'updateUserData' // 更新当前用户信息
+		]),
 		// 登入
 		async login() {
 			const vm = this
@@ -81,17 +85,18 @@ export default {
 				return
 			}
 			this.api
-				.login({
-					workId: vm.workId,
-					password: vm.password
-				})
+				.login(vm.formModel)
 				.then(response => {
 					vm.logining = false
-					console.log(response)
+					// 更新用户信息
+					vm.updateUserData(response.data.data)
+					if (response.data.msg === 'success') {
+						vm.jumpToIndex()
+					}
 				})
 				.catch(error => {
-					vm.logining = false
 					console.log(error)
+					vm.logining = false
 				})
 		},
 		// 触发表单校验
@@ -100,8 +105,13 @@ export default {
 			this.$refs.formRef.validate((result, object) => {
 				vm.validateState = result
 			})
+		},
+		// 跳转到主页
+		jumpToIndex() {
+			this.$router.replace('/')
 		}
-	}
+	},
+	mounted() {}
 }
 </script>
 

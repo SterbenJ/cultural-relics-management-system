@@ -3,6 +3,7 @@ import {
 	// Loading,
 	Message
 } from 'element-ui'
+import router from '../../router'
 
 // 根据环境切换 host
 if (process.env.NODE_ENV === 'development') {
@@ -10,6 +11,8 @@ if (process.env.NODE_ENV === 'development') {
 } else {
 	axios.defaults.baseURL = 'http://relics.wegfan.cn/api/v1'
 }
+
+axios.defaults.withCredentials = true
 
 /*
 let loading
@@ -44,6 +47,16 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
 	(response) => {
 		// endLoading()
+		if (response.data.code !== 200) {
+			Message.error(response.data.msg)
+			if (response.data.code === 403) {
+				router.replace({
+					name: 'login'
+				})
+				return
+			}
+			return Promise.reject(response)
+		}
 		return response
 	},
 	(error) => {

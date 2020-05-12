@@ -1,10 +1,7 @@
-<template>
-	<div>
-		Cultural RelicsList
-	</div>
-</template>
-
 <script>
+// import nativeTable from '../../components/nativeTable'
+export default {
+}
 </script>
 
 <style>

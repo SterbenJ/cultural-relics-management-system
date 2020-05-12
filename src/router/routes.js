@@ -42,6 +42,16 @@ export default [{
 				path: 'member-management',
 				name: 'memberManagement',
 				component: () => import('../views/memberManagement')
+			},
+			{
+				path: 'warehouse-management',
+				name: 'warehouseManagement',
+				component: () => import('../views/warehouseManagement')
+			},
+			{
+				path: 'test',
+				name: 'test',
+				component: () => import('../views/test')
 			}
 		]
 	}

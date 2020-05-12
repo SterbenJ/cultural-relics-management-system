@@ -14,7 +14,7 @@
 					<transition name="el-fade-in-linear">
 						<div
 							v-show="!collapsed"
-							class="title font-title-extra-large font-line-height-extra-large"
+							class="index-title font-title-extra-large font-line-height-extra-large"
 						>
 							故宫文物管理系统
 						</div>
@@ -51,11 +51,20 @@
 							操作记录
 						</el-menu-item>
 					</el-submenu>
+					<!-- 仓库管理 -->
+					<el-menu-item index="warehouseManagement" :route="{ name: 'warehouseManagement' }">
+						<i class="el-icon-house"></i>
+						<span slot="title">仓库管理</span>
+					</el-menu-item>
 					<!-- 成员管理 -->
 					<el-menu-item index="memberManagement" :route="{ name: 'memberManagement' }">
 						<i class="el-icon-school"></i>
 						<span slot="title">成员管理</span>
 					</el-menu-item>
+					<el-menu-item index="test" :route="{ name: 'test' }">
+						<span slot="title">测试</span>
+					</el-menu-item>
+					<el-menu-item v-show="!collapsed" @click="toAuthor" class="author-item">author @NoraH1to</el-menu-item>
 				</el-menu>
 			</el-aside>
 			<el-container>
@@ -67,13 +76,18 @@
 							<span slot="title">{{ userName }}</span>
 						</el-menu-item>
 						<el-popover ref="user-popover" trigger="hover" placement="bottom">
-							<button-logout @logout="actionAfterLogout"></button-logout>
+							<div class="font-line-height-extra-large font-title-large container-horizontal-center">{{ getJobName }}</div>
+							<button-change-pwd class="user-popover-item" @showChangePwdDialog="changePwdDialogVisible = true"></button-change-pwd>
+							<button-logout class="user-popover-item" @logout="actionAfterLogout"></button-logout>
 						</el-popover>
+						<change-pwd-dialog :changePwdDialogVisible.sync="changePwdDialogVisible"></change-pwd-dialog>
 					</el-menu>
 				</el-header>
-				<el-main>
-					<transition name="el-fade-in-linear"><router-view /></transition>
-				</el-main>
+				<el-scrollbar style="height:100%">
+					<el-main>
+						<transition name="el-fade-in-linear"><router-view /></transition>
+					</el-main>
+				</el-scrollbar>
 			</el-container>
 		</el-container>
 	</div>
@@ -82,18 +96,24 @@
 <script>
 import { mapGetters, mapMutations } from 'vuex'
 import buttonLogout from '../../components/logoutBtn'
+import buttonChangePwd from '../../components/changePwdBtn'
+import changePwdDialog from '../../components/changePwdDialog'
 export default {
 	components: {
-		buttonLogout
+		buttonLogout,
+		buttonChangePwd,
+		changePwdDialog
 	},
 	data() {
 		return {
-			collapsed: false
+			collapsed: false,
+			changePwdDialogVisible: false
 		}
 	},
 	computed: {
 		...mapGetters({
-			userName: 'user/userName' // 用户名
+			userName: 'user/userName', // 用户名
+			getJobName: 'getJobName' // 用户职务
 		}),
 		// 开关侧边栏按钮
 		collapseIcon() {
@@ -112,8 +132,11 @@ export default {
 		actionAfterLogout() {
 			this.deleteUserData()
 			this.$router.replace({ name: 'login' }).catch(error => {
-				console.log('route error:', error);
+				console.log('route error:', error)
 			})
+		},
+		toAuthor() {
+			window.open('https://github.com/SterbenJ')
 		}
 	},
 	mounted() {}
@@ -121,10 +144,11 @@ export default {
 </script>
 
 <style lang="stylus">
-.title
+.index-title
 	text-align center
 	font-weight 700
 	line-height 300%
+	color #fafdff
 	width 200px
 // elementUI滚动条适配
 .el-scrollbar__view
@@ -138,4 +162,13 @@ body, .el-scrollbar__wrap
 // width 0 auto
 .custom-el-header
 	padding 0
+.user-popover-item
+	margin-bottom 10px
+// 作者信息
+.author-item
+	position absolute
+	text-align center
+	width 200px
+	bottom 0px
+	width 100%
 </style>

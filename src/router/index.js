@@ -24,12 +24,15 @@ router.beforeEach((to, from, next) => {
 			next({
 				path: '/'
 			})
+			return
 		}
 	} else {
 		if (!hasLogin()) {
+			console.log('back to login');
 			next({
 				name: 'login'
 			})
+			return
 		}
 	}
 	next()

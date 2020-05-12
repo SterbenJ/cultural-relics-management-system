@@ -6,5 +6,9 @@ export default {
 	// 用户名
 	userName(state) {
 		return state.userData.name
+	},
+	// 职务ID
+	jobId(state) {
+		return state.userData.jobId
 	}
 }

@@ -4,7 +4,7 @@
 			<div id="main-container">
 					<transition name="el-fade-in-linear"><router-view /></transition>
 			</div>
-			<my-footer></my-footer>
+			<!-- <my-footer></my-footer> -->
 		</el-scrollbar>
 	</div>
 </template>
@@ -16,6 +16,10 @@ import myFooter from './components/footer'
 export default {
 	components: {
 		myFooter
+	},
+	methods: {
+	},
+	mounted() {
 	}
 }
 </script>

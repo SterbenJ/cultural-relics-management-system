@@ -17,7 +17,8 @@ export default {
 			const vm = this
 			vm.loading = true
 			this.api
-				.logout()
+				.logout
+				.func()
 				.then(response => {
 					vm.loading = false
 					vm.$emit('logout')

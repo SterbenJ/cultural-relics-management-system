@@ -10,6 +10,9 @@ import store from './store'
 // Api
 import api from './utils/api'
 
+// attrsMap
+import attrsMap from './utils/attrsMap'
+
 // axios
 /*
 import axios from 'axios'
@@ -43,6 +46,9 @@ Vue.use(ElementUI)
 
 // 挂载 api
 Vue.prototype.api = api
+
+// 挂载 attrsMap
+Vue.prototype.attrsMap = attrsMap
 
 // 关闭生产环境提示
 Vue.config.productionTip = false

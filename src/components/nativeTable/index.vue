@@ -1,5 +1,10 @@
 <script>
+import { Message } from 'element-ui'
+import vueQr from 'vue-qr'
 export default {
+	components: {
+		vueQr
+	},
 	data() {
 		return {
 			tableData: [],
@@ -16,8 +21,46 @@ export default {
 			},
 			totalPage: 0,
 			dialogVisible: false,
-			dialogFormModel: {
+			dialogFormModel: {},
+			pickerOptions: {
+				shortcuts: [
+					{
+						text: '最近一周',
+						onClick(picker) {
+							const end = new Date()
+							const start = new Date()
+							start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+							picker.$emit('pick', [start, end])
+						}
+					},
+					{
+						text: '最近一个月',
+						onClick(picker) {
+							const end = new Date()
+							const start = new Date()
+							start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+							picker.$emit('pick', [start, end])
+						}
+					},
+					{
+						text: '最近三个月',
+						onClick(picker) {
+							const end = new Date()
+							const start = new Date()
+							start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+							picker.$emit('pick', [start, end])
+						}
+					}
+				]
 			}
+		}
+	},
+	computed: {
+		isCreateRelics() {
+			return this.inNeedApi.attrMap.id.value === '文物ID' && !this.dialogFormModel.id
+		},
+		isRelics() {
+			return this.inNeedApi.attrMap.id.value === '文物ID'
 		}
 	},
 	created() {
@@ -51,40 +94,51 @@ export default {
 		},
 		// 初始化表格属性列表
 		initColumnModelList() {
-			this.$set(this.$data, 'columnModelList', Object.keys(this.inNeedApi.resultAttrMap))
+			this.$set(
+				this.$data,
+				'columnModelList',
+				Object.keys(this.inNeedApi.attrMap).filter(value => {
+					return this.inNeedApi.attrMap[value].owner.indexOf('result') !== -1
+				})
+			)
 		},
 		// 初始化自定义检索属性列表
 		initInputModelList() {
 			const iList = []
-			Object.keys(this.inNeedApi.requestParamMap).forEach((currentValue, index, arr) => {
-				if (!(currentValue === 'page' || currentValue === 'count')) {
-					iList.push(currentValue)
-					this.$set(this.formModel, currentValue, '')
-				}
-			})
-			console.log(iList);
+			Object.keys(this.inNeedApi.attrMap)
+				.filter(value => {
+					return this.inNeedApi.attrMap[value].owner.indexOf('form') !== -1
+				})
+				.forEach((currentValue, index, arr) => {
+					if (!(currentValue === 'page' || currentValue === 'count')) {
+						iList.push(currentValue)
+						this.$set(this.formModel, currentValue, '')
+					}
+				})
 			this.$set(this.$data, 'inputModelList', iList)
 		},
 		// 初始化 dialog 属性列表
 		initDialogModelList() {
 			const iList = []
-			Object.keys(this.inNeedApi.resultAttrMap).forEach((currentValue, index, arr) => {
-				this.$set(this.dialogFormModel, currentValue, '')
-				if (currentValue !== 'id') {
-					iList.push(currentValue)
-				}
-			})
+			Object.keys(this.inNeedApi.attrMap)
+				.filter(value => {
+					return this.inNeedApi.attrMap[value].owner.indexOf('edit') !== -1
+				})
+				.forEach((currentValue, index, arr) => {
+					this.$set(this.dialogFormModel, currentValue, '')
+					if (currentValue !== 'id') {
+						iList.push(currentValue)
+					}
+				})
 			this.$set(this.$data, 'dialogModelList', iList)
 		},
 		// 关闭 dialog
 		handleDialogClose(done) {
-			console.log('close dialog', this.$refs.dialogFormRef);
 			this.dialogVisible = false
 			this.initDialogModelList()
 		},
 		// 创建条目
 		createItem() {
-			console.log('createItem', this.dialogFormModel)
 			const loading = this.$loading({
 				lock: true,
 				text: '创建中',
@@ -92,19 +146,21 @@ export default {
 				background: 'rgba(0, 0, 0, 0.7)'
 			})
 			const vm = this
-			vm.createApi.func(vm.dialogFormModel).then(response => {
-				console.log('create success');
-				loading.close()
-				vm.handleDialogClose()
-				vm.getData()
-			}).catch(error => {
-				loading.close()
-				console.log('create fail', error);
-			})
+			vm.createApi
+				.func(vm.dialogFormModel)
+				.then(response => {
+					console.log('create success')
+					loading.close()
+					vm.handleDialogClose()
+					vm.getData()
+				})
+				.catch(error => {
+					loading.close()
+					console.log('create fail', error)
+				})
 		},
 		// 编辑条目
 		updateItem() {
-			console.log('updateItem', this.dialogFormModel)
 			const loading = this.$loading({
 				lock: true,
 				text: '更新中',
@@ -112,19 +168,21 @@ export default {
 				background: 'rgba(0, 0, 0, 0.7)'
 			})
 			const vm = this
-			vm.updateApi.func(vm.dialogFormModel).then(response => {
-				console.log('update success');
-				loading.close()
-				vm.handleDialogClose()
-				vm.getData()
-			}).catch(error => {
-				loading.close()
-				console.log('update fail', error);
-			})
+			vm.updateApi
+				.func(vm.dialogFormModel)
+				.then(response => {
+					console.log('update success')
+					loading.close()
+					vm.handleDialogClose()
+					vm.getData()
+				})
+				.catch(error => {
+					loading.close()
+					console.log('update fail', error)
+				})
 		},
 		// 删除条目
 		deleteItem() {
-			console.log('deleteItem', this.dialogFormModel)
 			const loading = this.$loading({
 				lock: true,
 				text: '删除中',
@@ -132,14 +190,22 @@ export default {
 				background: 'rgba(0, 0, 0, 0.7)'
 			})
 			const vm = this
-			vm.deleteApi.func(vm.dialogFormModel).then(response => {
-				console.log('delete success');
-				loading.close()
-				vm.getData()
-			}).catch(error => {
-				loading.close()
-				console.log('delete fail', error);
-			})
+			vm.deleteApi
+				.func(vm.dialogFormModel)
+				.then(response => {
+					console.log('delete success')
+					loading.close()
+					vm.getData()
+				})
+				.catch(error => {
+					loading.close()
+					console.log('delete fail', error)
+				})
+		},
+		checkRelics() {
+			return {
+				display: this.isCreateRelics ? 'none' : 'inline'
+			}
 		}
 	},
 	render: function(h) {
@@ -148,24 +214,104 @@ export default {
 		function buildDialog(h) {
 			const arr = []
 			for (const mprop of vm.dialogModelList) {
+				if (vm.inNeedApi.attrMap[mprop].type === 'Select') {
+					const selectArr = []
+					for (const selectProp in vm.inNeedApi.attrMap[mprop].selectMap) {
+						selectArr.push(
+							h('el-option', {
+								props: {
+									key: isNaN(Number(selectProp)) ? selectProp : Number(selectProp),
+									label: vm.inNeedApi.attrMap[mprop].selectMap[selectProp],
+									value: isNaN(Number(selectProp)) ? selectProp : Number(selectProp)
+								}
+							})
+						)
+					}
+					arr.push(
+						h(
+							'el-form-item',
+							{
+								props: {
+									label: vm.inNeedApi.attrMap[mprop].value
+								},
+								style: vm.checkRelics()
+							},
+							[
+								h(
+									'el-select',
+									{
+										props: {
+											value: vm.dialogFormModel[mprop],
+											clearable: true
+										},
+										on: {
+											input: function(event) {
+												vm.dialogFormModel[mprop] = event
+											}
+										}
+									},
+									selectArr
+								)
+							]
+						)
+					)
+				} else {
+					arr.push(
+						h(
+							'el-form-item',
+							{
+								props: {
+									label: vm.inNeedApi.attrMap[mprop].value
+								},
+								style: vm.checkRelics()
+							},
+							[
+								h('el-input', {
+									props: {
+										value: vm.dialogFormModel[mprop]
+									},
+									on: {
+										input: function(event) {
+											vm.dialogFormModel[mprop] = event
+										}
+									}
+								})
+							]
+						)
+					)
+				}
+			}
+			// 判断创建文物特殊情况
+			if (vm.isCreateRelics) {
 				arr.push(
 					h(
-						'el-form-item',
+						'el-upload',
 						{
 							props: {
-								label: vm.inNeedApi.resultAttrMap[mprop]
+								action:
+									process.env.NODE_ENV === 'production'
+										? 'https://relics.wegfan.cn/api/v1/relics'
+										: '/api/v1/relics',
+								accept: 'image/*',
+								multiple: false,
+								'with-credentials': true,
+								'show-file-list': false,
+								'list-type': 'picture-card',
+								limit: 1,
+								'on-success': function() {
+									console.log('success upload')
+									vm.dialogVisible = false
+									vm.getData()
+								},
+								'on-error': function(err) {
+									console.log('fail upload')
+									Message.error(err)
+								}
 							}
 						},
 						[
-							h('el-input', {
-								props: {
-									value: vm.dialogFormModel[mprop]
-								},
-								on: {
-									input: function(event) {
-										vm.dialogFormModel[mprop] = event
-									}
-								}
+							h('i', {
+								class: ['el-icon-plus']
 							})
 						]
 					)
@@ -193,7 +339,8 @@ export default {
 						{
 							ref: 'dialogFormRef',
 							props: {
-								model: vm.dialogFormModel
+								model: vm.dialogFormModel,
+								'label-position': 'top'
 							}
 						},
 						arr
@@ -201,40 +348,37 @@ export default {
 					h(
 						'span',
 						{
-							slot: 'footer'
+							slot: 'footer',
+							style: vm.checkRelics()
 						},
 						[
-							h(
-								'el-button',
-								{
-									domProps: {
-										innerHTML: '取 消'
-									},
-									on: {
-										click: function(event) {
-											vm.handleDialogClose(event)
-										}
+							h('el-button', {
+								domProps: {
+									innerHTML: '取 消'
+								},
+								on: {
+									click: function(event) {
+										vm.handleDialogClose(event)
 									}
 								}
-							),
+							}),
 							// dialog 底部按钮
-							h(
-								'el-button',
-								{
-									props: {
-										type: 'primary'
-									},
-									domProps: {
-										innerHTML: '确 定'
-									},
-									on: {
-										click: function() {
-											const action = vm.dialogFormModel.id ? vm.updateItem : vm.createItem
-											action()
-										}
+							h('el-button', {
+								props: {
+									type: 'primary'
+								},
+								domProps: {
+									innerHTML: '确 定'
+								},
+								on: {
+									click: function() {
+										const action = vm.dialogFormModel.id
+											? vm.updateItem
+											: vm.createItem
+										action()
 									}
 								}
-							)
+							})
 						]
 					)
 				]
@@ -244,29 +388,102 @@ export default {
 		function buildForm(h) {
 			const arr = []
 			for (const mprop of vm.inputModelList) {
-				arr.push(
-					h(
-						'el-form-item',
-						{
-							props: {
-								label: vm.inNeedApi.requestParamMap[mprop],
-								prop: mprop
-							}
-						},
-						[
-							h('el-input', {
+				// 时间类型特殊点
+				if (vm.inNeedApi.attrMap[mprop].type === 'date') {
+					arr.push(
+						h(
+							'el-form-item',
+							{
 								props: {
-									value: vm.formModel[mprop]
-								},
-								on: {
-									input: function(event) {
-										vm.formModel[mprop] = event
+									label: vm.inNeedApi.attrMap[mprop].value,
+									prop: mprop
+								}
+							},
+							[
+								h('el-date-picker', {
+									props: {
+										value: vm.formModel[mprop],
+										'picker-options': vm.pickerOptions,
+										'default-time': '00:00:00',
+										type: 'datetime',
+										format: 'yyyy-MM-dd hh:mm',
+										'value-format': 'yyyy-MM-dd hh:mm:ss'
+									},
+									on: {
+										input: function(event) {
+											vm.formModel[mprop] = event
+										}
 									}
+								})
+							]
+						)
+					)
+				} else if (vm.inNeedApi.attrMap[mprop].type === 'Select') {
+					const selectArr = []
+					for (const selectProp in vm.inNeedApi.attrMap[mprop].selectMap) {
+						selectArr.push(
+							h('el-option', {
+								props: {
+									key: isNaN(Number(selectProp)) ? selectProp : Number(selectProp),
+									label: vm.inNeedApi.attrMap[mprop].selectMap[selectProp],
+									value: isNaN(Number(selectProp)) ? selectProp : Number(selectProp)
 								}
 							})
-						]
+						)
+					}
+					arr.push(
+						h(
+							'el-form-item',
+							{
+								props: {
+									label: vm.inNeedApi.attrMap[mprop].value,
+									prop: mprop
+								}
+							},
+							[
+								h(
+									'el-select',
+									{
+										props: {
+											value: vm.formModel[mprop],
+											clearable: true
+										},
+										on: {
+											input: function(event) {
+												vm.formModel[mprop] = event
+											}
+										}
+									},
+									selectArr
+								)
+							]
+						)
 					)
-				)
+				} else {
+					arr.push(
+						h(
+							'el-form-item',
+							{
+								props: {
+									label: vm.inNeedApi.attrMap[mprop].value,
+									prop: mprop
+								}
+							},
+							[
+								h('el-input', {
+									props: {
+										value: vm.formModel[mprop]
+									},
+									on: {
+										input: function(event) {
+											vm.formModel[mprop] = event
+										}
+									}
+								})
+							]
+						)
+					)
+				}
 			}
 			// 检索按钮
 			arr.push(
@@ -277,7 +494,7 @@ export default {
 						},
 						on: {
 							click: function(event) {
-								vm.getData()()
+								vm.getData()
 							}
 						}
 					})
@@ -288,21 +505,98 @@ export default {
 		// 构建表格
 		function buildTable(h) {
 			const arr = []
-			for (const mprop of vm.columnModelList) {
+			// 添加二维码
+			if (vm.isRelics) {
 				arr.push(
 					h('el-table-column', {
 						props: {
-							prop: mprop,
-							label: vm.inNeedApi.resultAttrMap[mprop]
+							label: '二维码',
+							width: '122px'
+						},
+						scopedSlots: {
+							default: scope => {
+								return [
+									h('vueQr', {
+										style: {
+											width: '100px',
+											height: '100px'
+										},
+										props: {
+											margin: 5,
+											dotScale: 1,
+											size: 100,
+											text: '#' + scope.row.id + '#'
+										}
+									})
+								]
+							}
 						}
 					})
 				)
+			}
+			for (const mprop of vm.columnModelList) {
+				if (vm.inNeedApi.attrMap[mprop].type === 'img') {
+					arr.push(
+						h('el-table-column', {
+							props: {
+								prop: mprop,
+								label: vm.inNeedApi.attrMap[mprop].value,
+								width: '122px'
+							},
+							scopedSlots: {
+								default: scope => {
+									return [
+										h('el-image', {
+											style: {
+												width: '100px',
+												height: '100px'
+											},
+											props: {
+												src:
+													process.env.NODE_ENV === 'production'
+														? 'https://relics.wegfan.cn' +
+														  scope.row[mprop]
+														: scope.row[mprop],
+												fit: 'contain'
+											}
+										})
+									]
+								}
+							}
+						})
+					)
+				} else if (vm.inNeedApi.attrMap[mprop].type === 'Select') {
+					arr.push(
+						h('el-table-column', {
+							props: {
+								prop: mprop,
+								label: vm.inNeedApi.attrMap[mprop].value,
+								width: '120px'
+							},
+							scopedSlots: {
+								default: scope => {
+									return vm.inNeedApi.attrMap[mprop].selectMap[scope.row[mprop]]
+								}
+							}
+						})
+					)
+				} else {
+					arr.push(
+						h('el-table-column', {
+							props: {
+								prop: mprop,
+								label: vm.inNeedApi.attrMap[mprop].value
+							}
+						})
+					)
+				}
 			}
 			arr.push(
 				h('el-table-column', {
 					props: {
 						label: '操作',
-						width: '100'
+						width: '100',
+						fixed: 'right'
 					},
 					scopedSlots: {
 						// 表头对应的内容， 里面可根据需求自定义
@@ -317,10 +611,10 @@ export default {
 										},
 										on: {
 											click: function(e) {
-												const tmpList = Object.keys(scope.row)
-												for (const mprop of tmpList) {
+												for (const mprop of vm.dialogModelList) {
 													vm.dialogFormModel[mprop] = scope.row[mprop]
 												}
+												vm.dialogFormModel.id = scope.row.id
 												vm.dialogVisible = true
 											}
 										}
@@ -354,7 +648,8 @@ export default {
 													click: function(e) {
 														const tmpList = Object.keys(scope.row)
 														for (const mprop of tmpList) {
-															vm.dialogFormModel[mprop] = scope.row[mprop]
+															vm.dialogFormModel[mprop] =
+																scope.row[mprop]
 														}
 													}
 												},

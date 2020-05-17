@@ -10,8 +10,7 @@ import store from '../../store'
 if (process.env.NODE_ENV === 'development') {
 	axios.defaults.baseURL = '/api/v1'
 } else {
-	// axios.defaults.headers.common.Origin = 'http://relics.norah1to.com'
-	axios.defaults.baseURL = 'http://relics.wegfan.cn/api/v1'
+	axios.defaults.baseURL = 'https://relics.wegfan.cn/api/v1'
 }
 
 axios.defaults.withCredentials = true

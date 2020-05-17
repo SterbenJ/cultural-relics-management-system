@@ -40,4 +40,6 @@ body, html
 	height 100%
 body, .el-scrollbar__wrap
 	overflow-x hidden
+.el-scrollbar__wrap
+	padding-bottom 17px
 </style>

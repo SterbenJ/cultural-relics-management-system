@@ -55,7 +55,7 @@ export default {
 				})
 				.catch(error => {
 					vm.loading = false
-					console.log(error)
+					console.log('changpwd fail', error)
 				})
 		},
 		// 触发表单校验

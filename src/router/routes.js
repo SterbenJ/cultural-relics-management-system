@@ -49,6 +49,12 @@ export default [{
 				component: () => import('../views/warehouseManagement')
 			},
 			{
+				path: 'relics/:requestId',
+				name: 'relics',
+				component: () => import('../views/relics'),
+				props: true
+			},
+			{
 				path: 'test',
 				name: 'test',
 				component: () => import('../views/test')

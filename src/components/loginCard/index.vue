@@ -58,6 +58,11 @@ export default {
 						required: true,
 						message: '请输入工号',
 						trigger: 'blur'
+					},
+					{
+						max: 10,
+						message: '长度不能大于 10 个字符',
+						trigger: 'blur'
 					}
 				],
 				password: [

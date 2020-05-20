@@ -23,12 +23,12 @@ function jobIndex() {
 	const id = jobId()
 	if (id === 5) {
 		return {
-			path: '/'
+			name: 'culturalRelicsList'
 		}
 	}
 	if (id === 4) {
 		return {
-			path: '/'
+			name: 'culturalRelicsList'
 		}
 	}
 	if (id === 3) {
@@ -38,7 +38,7 @@ function jobIndex() {
 	}
 	if (id === 2) {
 		return {
-			path: ''
+			name: 'culturalRelicsList'
 		}
 	}
 	if (id === 1) {
@@ -63,6 +63,13 @@ router.beforeEach((to, from, next) => {
 			next({
 				name: 'login'
 			})
+		}
+		if (!from.name) {
+			if (to.name === jobIndex().name) {
+				next()
+			} else {
+				next(jobIndex())
+			}
 		}
 		if (from.name === 'login') {
 			if (to.name === jobIndex().name) {

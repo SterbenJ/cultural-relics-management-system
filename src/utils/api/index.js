@@ -1,4 +1,5 @@
 import axios from './customAxios.js'
+import store from '../../store'
 
 export default {
 	// 登录
@@ -290,8 +291,8 @@ export default {
 				type: 'number',
 				owner: ['result', 'edit']
 			},
-			place: {
-				value: '收储地点',
+			shelfId: {
+				value: '收储货架ID',
 				type: 'String',
 				owner: ['result', 'edit']
 			},
@@ -352,8 +353,13 @@ export default {
 				type: 'date',
 				owner: ['result']
 			},
-			comment: {
-				value: '备注',
+			comment1: {
+				value: '备注1',
+				type: 'String',
+				owner: ['result', 'edit']
+			},
+			comment2: {
+				value: '备注2',
 				type: 'String',
 				owner: ['result', 'edit']
 			},
@@ -367,7 +373,8 @@ export default {
 					3: '外借',
 					4: '修理',
 					5: '离馆'
-				}
+				},
+				selectDefault: 2
 			},
 			page: {
 				value: '页码',
@@ -430,6 +437,98 @@ export default {
 		func(data) {
 			return axios({
 				url: '/relics/' + data.id,
+				method: 'DELETE'
+			})
+		}
+	},
+
+	// 获取用户信息
+	userList: {
+		func(data) {
+			return axios({
+				url: '/users',
+				method: 'GET',
+				params: data
+			})
+		},
+		attrMap: {
+			id: {
+				value: '编号',
+				type: 'String',
+				owner: ['result', 'edit']
+			},
+			workId: {
+				value: '工号',
+				type: 'String',
+				owner: ['result', 'edit']
+			},
+			name: {
+				value: '姓名',
+				type: 'String',
+				owner: ['result', 'edit']
+			},
+			jobId: {
+				value: '职务',
+				type: 'Select',
+				owner: ['result', 'edit'],
+				selectMap: store.getters.getJobSelectMap
+			},
+			extraPermissionsId: {
+				value: '额外权限',
+				type: 'mulitSelect',
+				owner: ['result', 'edit'],
+				selectMap: store.getters.getPermissionSelectMap
+			},
+			telephone: {
+				value: '手机号',
+				type: 'String',
+				owner: ['result', 'edit']
+			},
+			password: {
+				value: '新密码',
+				type: 'String',
+				owner: ['edit']
+			},
+			page: {
+				value: '页码',
+				type: 'number',
+				owner: ['form']
+			},
+			count: {
+				value: '单页显示数',
+				type: 'number',
+				owner: ['form']
+			}
+		}
+	},
+
+	// 创建用户
+	createUser: {
+		func(data) {
+			return axios({
+				url: '/users',
+				method: 'POST',
+				data: data
+			})
+		}
+	},
+
+	// 更新文物,
+	updateUser: {
+		func(data) {
+			return axios({
+				url: '/users/' + data.id,
+				method: 'PUT',
+				data: data
+			})
+		}
+	},
+
+	// 删除用户
+	deleteUser: {
+		func(data) {
+			return axios({
+				url: '/users/' + data.id,
 				method: 'DELETE'
 			})
 		}

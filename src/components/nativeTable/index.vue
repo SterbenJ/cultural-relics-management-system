@@ -21,38 +21,7 @@ export default {
 			},
 			totalPage: 0,
 			dialogVisible: false,
-			dialogFormModel: {},
-			pickerOptions: {
-				shortcuts: [
-					{
-						text: '最近一周',
-						onClick(picker) {
-							const end = new Date()
-							const start = new Date()
-							start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
-							picker.$emit('pick', [start, end])
-						}
-					},
-					{
-						text: '最近一个月',
-						onClick(picker) {
-							const end = new Date()
-							const start = new Date()
-							start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
-							picker.$emit('pick', [start, end])
-						}
-					},
-					{
-						text: '最近三个月',
-						onClick(picker) {
-							const end = new Date()
-							const start = new Date()
-							start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
-							picker.$emit('pick', [start, end])
-						}
-					}
-				]
-			}
+			dialogFormModel: {}
 		}
 	},
 	computed: {
@@ -61,6 +30,9 @@ export default {
 		},
 		isRelics() {
 			return this.inNeedApi.attrMap.id.value === '文物ID'
+		},
+		canSearch() {
+			return Object.keys(this.formModel).length > 2
 		}
 	},
 	created() {
@@ -255,6 +227,48 @@ export default {
 							]
 						)
 					)
+				} else if (vm.inNeedApi.attrMap[mprop].type === 'mulitSelect') {
+					const selectArr = []
+					for (const selectProp in vm.inNeedApi.attrMap[mprop].selectMap) {
+						selectArr.push(
+							h('el-option', {
+								props: {
+									key: isNaN(Number(selectProp)) ? selectProp : Number(selectProp),
+									label: vm.inNeedApi.attrMap[mprop].selectMap[selectProp],
+									value: isNaN(Number(selectProp)) ? selectProp : Number(selectProp)
+								}
+							})
+						)
+					}
+					arr.push(
+						h(
+							'el-form-item',
+							{
+								props: {
+									label: vm.inNeedApi.attrMap[mprop].value
+								},
+								style: vm.checkRelics()
+							},
+							[
+								h(
+									'el-select',
+									{
+										props: {
+											value: vm.dialogFormModel[mprop],
+											clearable: true,
+											multiple: true
+										},
+										on: {
+											input: function(event) {
+												vm.dialogFormModel[mprop] = event
+											}
+										}
+									},
+									selectArr
+								)
+							]
+						)
+					)
 				} else {
 					arr.push(
 						h(
@@ -298,10 +312,14 @@ export default {
 								'show-file-list': false,
 								'list-type': 'picture-card',
 								limit: 1,
-								'on-success': function() {
-									console.log('success upload')
+								'on-success': function(res) {
+									console.log('success upload', res)
+									if (res.code !== 200) {
+										Message.error(res.msg)
+									} else {
+										vm.getData()
+									}
 									vm.dialogVisible = false
-									vm.getData()
 								},
 								'on-error': function(err) {
 									console.log('fail upload')
@@ -403,11 +421,10 @@ export default {
 								h('el-date-picker', {
 									props: {
 										value: vm.formModel[mprop],
-										'picker-options': vm.pickerOptions,
 										'default-time': '00:00:00',
 										type: 'datetime',
-										format: 'yyyy-MM-dd hh:mm',
-										'value-format': 'yyyy-MM-dd hh:mm:ss'
+										format: 'yyyy-MM-dd HH:mm',
+										'value-format': 'yyyy-MM-dd HH:mm:ss'
 									},
 									on: {
 										input: function(event) {
@@ -419,6 +436,52 @@ export default {
 						)
 					)
 				} else if (vm.inNeedApi.attrMap[mprop].type === 'Select') {
+					const selectArr = []
+					for (const selectProp in vm.inNeedApi.attrMap[mprop].selectMap) {
+						selectArr.push(
+							h('el-option', {
+								props: {
+									key: isNaN(Number(selectProp)) ? selectProp : Number(selectProp),
+									label: vm.inNeedApi.attrMap[mprop].selectMap[selectProp],
+									value: isNaN(Number(selectProp)) ? selectProp : Number(selectProp)
+								}
+							})
+						)
+					}
+					if (vm.inNeedApi.attrMap[mprop].selectDefault && !vm.formModel[mprop]) {
+						vm.$set(vm.formModel, mprop, vm.inNeedApi.attrMap[mprop].selectDefault)
+					}
+					arr.push(
+						h(
+							'el-form-item',
+							{
+								props: {
+									label: vm.inNeedApi.attrMap[mprop].value,
+									prop: mprop
+								}
+							},
+							[
+								h(
+									'el-select',
+									{
+										props: {
+											value: vm.formModel[mprop],
+											clearable: true
+										},
+										on: {
+											input: function(event) {
+												console.log(event);
+												vm.formModel[mprop] = event
+												vm.formModel = { ...vm.formModel }
+											}
+										}
+									},
+									selectArr
+								)
+							]
+						)
+					)
+				} else if (vm.inNeedApi.attrMap[mprop].type === 'mulitSelect') {
 					const selectArr = []
 					for (const selectProp in vm.inNeedApi.attrMap[mprop].selectMap) {
 						selectArr.push(
@@ -446,7 +509,8 @@ export default {
 									{
 										props: {
 											value: vm.formModel[mprop],
-											clearable: true
+											clearable: true,
+											multiple: true
 										},
 										on: {
 											input: function(event) {
@@ -486,20 +550,22 @@ export default {
 				}
 			}
 			// 检索按钮
-			arr.push(
-				h('el-form-item', {}, [
-					h('el-button', {
-						domProps: {
-							innerHTML: '检 索'
-						},
-						on: {
-							click: function(event) {
-								vm.getData()
+			if (vm.canSearch) {
+				arr.push(
+					h('el-form-item', {}, [
+						h('el-button', {
+							domProps: {
+								innerHTML: '检 索'
+							},
+							on: {
+								click: function(event) {
+									vm.getData()
+								}
 							}
-						}
-					})
-				])
-			)
+						})
+					])
+				)
+			}
 			return arr
 		}
 		// 构建表格
@@ -580,6 +646,29 @@ export default {
 							}
 						})
 					)
+				} else if (vm.inNeedApi.attrMap[mprop].type === 'mulitSelect') {
+					arr.push(
+						h('el-table-column', {
+							props: {
+								prop: mprop,
+								label: vm.inNeedApi.attrMap[mprop].value,
+								width: '120px'
+							},
+							scopedSlots: {
+								default: scope => {
+									var resultStr = ''
+									for (const permissionId of scope.row[mprop]) {
+										if (resultStr) {
+											resultStr = resultStr + ',\n' + vm.$store.getters.getPermissionById(permissionId).name
+										} else {
+											resultStr = vm.$store.getters.getPermissionById(permissionId).name
+										}
+									}
+									return resultStr
+								}
+							}
+						})
+					)
 				} else {
 					arr.push(
 						h('el-table-column', {
@@ -612,7 +701,11 @@ export default {
 										on: {
 											click: function(e) {
 												for (const mprop of vm.dialogModelList) {
-													vm.dialogFormModel[mprop] = scope.row[mprop]
+													if (scope.row[mprop]) {
+														vm.dialogFormModel[mprop] = scope.row[mprop]
+													} else {
+														vm.dialogFormModel[mprop] = ''
+													}
 												}
 												vm.dialogFormModel.id = scope.row.id
 												vm.dialogVisible = true

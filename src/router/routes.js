@@ -55,6 +55,11 @@ export default [{
 				props: true
 			},
 			{
+				path: 'create-relics',
+				name: 'createRelics',
+				component: () => import('../views/createRelics')
+			},
+			{
 				path: 'test',
 				name: 'test',
 				component: () => import('../views/test')

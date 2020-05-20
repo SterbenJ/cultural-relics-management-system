@@ -15,16 +15,47 @@ function hasLogin() {
 	return store.getters['user/hasLogin']
 }
 
+function jobId() {
+	return store.getters['user/jobId']
+}
+
+function jobIndex() {
+	const id = jobId()
+	if (id === 5) {
+		return {
+			path: '/'
+		}
+	}
+	if (id === 4) {
+		return {
+			path: '/'
+		}
+	}
+	if (id === 3) {
+		return {
+			name: 'warehouseManagement'
+		}
+	}
+	if (id === 2) {
+		return {
+			path: ''
+		}
+	}
+	if (id === 1) {
+		return {
+			name: 'createRelics'
+		}
+	}
+}
+
 // 全局前置守卫
 router.beforeEach((to, from, next) => {
 	console.log('router to: ', to.name)
+	console.log('router from: ', from.name)
 	// 若不是前往登录界面，都要判断是否登录
 	if (to.name === 'login') {
 		if (hasLogin()) {
-			next({
-				path: '/'
-			})
-			return
+			next(jobIndex())
 		}
 	} else {
 		if (!hasLogin()) {
@@ -32,7 +63,13 @@ router.beforeEach((to, from, next) => {
 			next({
 				name: 'login'
 			})
-			return
+		}
+		if (from.name === 'login') {
+			if (to.name === jobIndex().name) {
+				next()
+			} else {
+				next(jobIndex())
+			}
 		}
 	}
 	next()

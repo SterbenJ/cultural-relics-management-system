@@ -26,23 +26,31 @@
 							<span slot="title">文物管理</span>
 						</template>
 						<el-menu-item
+							v-if="hasPermission(3)"
+							index="createRelics"
+							:route="{ name: 'createRelics' }"
+						>
+							拍照新建文物
+						</el-menu-item>
+						<el-menu-item
+							v-if="hasPermission(4)"
 							index="culturalRelicsList"
 							:route="{ name: 'culturalRelicsList' }"
 						>
 							文物列表
 						</el-menu-item>
-						<el-menu-item
+						<!-- <el-menu-item
 							index="culturalRelicsNeedTouch"
 							:route="{ name: 'culturalRelicsNeedTouch' }"
 						>
 							待录文物
-						</el-menu-item>
-						<el-menu-item index="checkRecord" :route="{ name: 'checkRecord' }">
+						</el-menu-item> -->
+						<el-menu-item v-if="hasPermission(10)" index="checkRecord" :route="{ name: 'checkRecord' }">
 							盘点记录
 						</el-menu-item>
 					</el-submenu>
 					<!-- 操作管理 -->
-					<el-submenu index="2">
+					<el-submenu v-if="hasPermission(13)" index="2">
 						<template slot="title">
 							<i class="el-icon-edit"></i>
 							<span slot="title">操作管理</span>
@@ -52,12 +60,12 @@
 						</el-menu-item>
 					</el-submenu>
 					<!-- 仓库管理 -->
-					<el-menu-item index="warehouseManagement" :route="{ name: 'warehouseManagement' }">
+					<el-menu-item v-if="hasPermission(2)" index="warehouseManagement" :route="{ name: 'warehouseManagement' }">
 						<i class="el-icon-house"></i>
 						<span slot="title">仓库管理</span>
 					</el-menu-item>
 					<!-- 成员管理 -->
-					<el-menu-item index="memberManagement" :route="{ name: 'memberManagement' }">
+					<el-menu-item v-if="hasPermission(1)" index="memberManagement" :route="{ name: 'memberManagement' }">
 						<i class="el-icon-school"></i>
 						<span slot="title">成员管理</span>
 					</el-menu-item>
@@ -113,7 +121,8 @@ export default {
 	computed: {
 		...mapGetters({
 			userName: 'user/userName', // 用户名
-			getJobName: 'getJobName' // 用户职务
+			getJobName: 'getJobName', // 用户职务
+			hasPermission: 'user/hasPermission'
 		}),
 		// 开关侧边栏按钮
 		collapseIcon() {

@@ -9,6 +9,8 @@ export default {
 			deleteApi: this.api.deleteRelics,
 			updateApi: this.api.updateRelics
 		}
+	},
+	mounted() {
 	}
 }
 </script>

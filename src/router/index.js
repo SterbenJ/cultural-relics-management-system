@@ -66,11 +66,12 @@ router.beforeEach((to, from, next) => {
 			})
 		}
 		if (!from.name) {
-			if (to.name === jobIndex().name) {
-				next()
-			} else {
-				next(jobIndex())
-			}
+			// if (to.name === jobIndex().name) {
+			// 	next()
+			// } else {
+			// 	next(jobIndex())
+			// }
+			next()
 		}
 		if (from.name === 'login') {
 			if (to.name === jobIndex().name) {

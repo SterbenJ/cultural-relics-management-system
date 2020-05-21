@@ -57,10 +57,12 @@ export default [{
 				}
 			},
 			{
-				path: 'relics/:requestId',
+				path: 'relics',
 				name: 'relics',
 				component: () => import('../views/relics'),
-				props: true
+				props: (route) => {
+					return { ...route.query }
+				}
 			},
 			{
 				path: 'create-relics',

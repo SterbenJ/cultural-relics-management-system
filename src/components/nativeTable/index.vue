@@ -758,6 +758,7 @@ export default {
 										},
 										on: {
 											click: function(e) {
+												event.stopPropagation()
 												for (const mprop of vm.dialogModelList) {
 													if (scope.row[mprop]) {
 														vm.dialogFormModel[mprop] = scope.row[mprop]
@@ -797,6 +798,7 @@ export default {
 												},
 												on: {
 													click: function(e) {
+														event.stopPropagation()
 														const tmpList = Object.keys(scope.row)
 														for (const mprop of tmpList) {
 															vm.dialogFormModel[mprop] =

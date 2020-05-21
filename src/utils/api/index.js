@@ -226,6 +226,16 @@ export default {
 	 *  文物
 	 */
 
+	// 获取单个文物详情
+	relics: {
+		func(data) {
+			return axios({
+				url: 'relics/' + data.id,
+				method: 'GET'
+			})
+		}
+	},
+
 	// 获取所有文物信息
 	relicsList: {
 		func(data) {
@@ -289,7 +299,7 @@ export default {
 				permission: 5
 			},
 			weight: {
-				value: '重量',
+				value: '重量(kg)',
 				type: 'Number',
 				owner: ['result', 'edit'],
 				permission: 5

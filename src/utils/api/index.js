@@ -299,7 +299,7 @@ export default {
 				permission: 5
 			},
 			weight: {
-				value: '重量(kg)',
+				value: '重量 (千克)',
 				type: 'Number',
 				owner: ['result', 'edit'],
 				permission: 5
@@ -310,6 +310,16 @@ export default {
 				owner: ['result', 'edit'],
 				permission: 5
 			},
+			warehouse: {
+				value: '仓库ID',
+				type: 'Number',
+				owner: ['form']
+			},
+			shelf: {
+				value: '货架ID',
+				type: 'Number',
+				owner: ['form']
+			},
 			shelfId: {
 				value: '收储货架ID',
 				type: 'Number',
@@ -317,13 +327,13 @@ export default {
 				permission: 5
 			},
 			enterPrice: {
-				value: '入馆价值',
+				value: '入馆价值 (人民币)',
 				type: 'Number',
 				owner: ['result', 'edit'],
 				permission: 7
 			},
 			leavePrice: {
-				value: '离馆价值',
+				value: '离馆价值 (人民币)',
 				type: 'Number',
 				owner: ['result', 'edit'],
 				permission: 7

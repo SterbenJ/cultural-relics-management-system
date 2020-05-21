@@ -45,7 +45,11 @@
 						>
 							待录文物
 						</el-menu-item> -->
-						<el-menu-item v-if="hasPermission(10)" index="checkRecord" :route="{ name: 'checkRecord' }">
+						<el-menu-item
+							v-if="hasPermission(10)"
+							index="checkRecord"
+							:route="{ name: 'checkRecord' }"
+						>
 							盘点记录
 						</el-menu-item>
 					</el-submenu>
@@ -65,22 +69,34 @@
 							<i class="el-icon-house"></i>
 							<span slot="title">仓库管理</span>
 						</template>
-						<el-menu-item index="warehouseManagement" :route="{ name: 'warehouseManagement' }">
+						<el-menu-item
+							index="warehouseManagement"
+							:route="{ name: 'warehouseManagement' }"
+						>
 							仓库管理
 						</el-menu-item>
-						<el-menu-item index="shelvesManagement" :route="{ name: 'shelvesManagement' }">
+						<el-menu-item
+							index="shelvesManagement"
+							:route="{ name: 'shelvesManagement' }"
+						>
 							货架管理
 						</el-menu-item>
 					</el-submenu>
 					<!-- 成员管理 -->
-					<el-menu-item v-if="hasPermission(1)" index="memberManagement" :route="{ name: 'memberManagement' }">
+					<el-menu-item
+						v-if="hasPermission(1)"
+						index="memberManagement"
+						:route="{ name: 'memberManagement' }"
+					>
 						<i class="el-icon-school"></i>
 						<span slot="title">成员管理</span>
 					</el-menu-item>
 					<el-menu-item index="test" :route="{ name: 'test' }">
 						<span slot="title">测试</span>
 					</el-menu-item>
-					<el-menu-item v-show="!collapsed" @click="toAuthor" class="author-item">author @NoraH1to</el-menu-item>
+					<el-menu-item v-show="!collapsed" @click="toAuthor" class="author-item">
+						author @NoraH1to
+					</el-menu-item>
 				</el-menu>
 			</el-aside>
 			<el-container>
@@ -92,14 +108,26 @@
 							<span slot="title">{{ userName }}</span>
 						</el-menu-item>
 						<el-popover ref="user-popover" trigger="hover" placement="bottom">
-							<div class="font-line-height-extra-large font-title-large container-horizontal-center">{{ getJobName }}</div>
-							<button-change-pwd class="user-popover-item" @showChangePwdDialog="changePwdDialogVisible = true"></button-change-pwd>
-							<button-logout class="user-popover-item" @logout="actionAfterLogout"></button-logout>
+							<div
+								class="font-line-height-extra-large font-title-large container-horizontal-center"
+							>
+								{{ getJobName }}
+							</div>
+							<button-change-pwd
+								class="user-popover-item"
+								@showChangePwdDialog="changePwdDialogVisible = true"
+							></button-change-pwd>
+							<button-logout
+								class="user-popover-item"
+								@logout="actionAfterLogout"
+							></button-logout>
 						</el-popover>
-						<change-pwd-dialog :changePwdDialogVisible.sync="changePwdDialogVisible"></change-pwd-dialog>
+						<change-pwd-dialog
+							:changePwdDialogVisible.sync="changePwdDialogVisible"
+						></change-pwd-dialog>
 					</el-menu>
 				</el-header>
-				<el-scrollbar style="height:100%">
+				<el-scrollbar ref="scrollbar" style="height:100%">
 					<el-main>
 						<transition name="el-fade-in-linear"><router-view /></transition>
 					</el-main>
@@ -135,6 +163,19 @@ export default {
 		// 开关侧边栏按钮
 		collapseIcon() {
 			return this.collapsed ? 'el-icon-s-unfold' : 'el-icon-s-fold'
+		}
+	},
+	watch: {
+		// 检测 当前路由地址的变化, 路由地址发生改变时, router-view 显示的路由改变时需要将滚动条复位到顶部
+		'$route.path'(newValue, oldValue) {
+			console.log(oldValue, typeof oldValue, '$route.path oldValue')
+			console.log(newValue, typeof newValue, '$route.path newValue')
+			// 通过 ref 拿到 el-scrollbar 的实例对象( vue 实例对象)
+			const scrollbar = this.$refs.scrollbar
+			// scrollbar 的实例对象相当于在 el-scrollbar 组件里面的 this
+			const wrap = scrollbar.$refs.wrap
+			// $refs.wrap 是 el-scrollbar 组件里的 ref='wrap', 是一个 dom
+			wrap.scrollTo(0, 0)
 		}
 	},
 	methods: {

@@ -8,7 +8,13 @@ Vue.use(VueRouter)
 const router = new VueRouter({
 	mode: 'history',
 	base: process.env.BASE_URL,
-	routes
+	routes,
+	scrollBehavior(to, from, saveTop) {
+		return {
+			x: 0,
+			y: 0
+		}
+	}
 })
 
 function hasLogin() {

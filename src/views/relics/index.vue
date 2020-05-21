@@ -2,8 +2,8 @@
 	<div>
 		<el-row id="relics-container">
 			<el-col :span="22" :offset="1">
-				<el-row :gutter="20">
-					<el-col :span="10" :offset="1">
+				<el-row v-if="!simple" :gutter="20">
+					<el-col :span="10" :offset="2">
 						<transition name="el-zoom-in-top">
 							<vue-qr
 								v-show="!loading"
@@ -28,19 +28,9 @@
 				</el-row>
 				<el-row>
 					<transition name="el-zoom-in-top">
-						<el-table
-							:data="dataInTable"
-							stripe
-							style="width: 100%;"
-							v-show="!loading"
-							>
-								<el-table-column
-									prop="key"
-									width="150"
-								/>
-								<el-table-column
-									prop="value"
-								/>
+						<el-table :data="dataInTable" stripe style="width: 100%;" v-show="!loading">
+							<el-table-column prop="key" width="150" />
+							<el-table-column prop="value" />
 						</el-table>
 					</transition>
 				</el-row>
@@ -52,11 +42,23 @@
 <script>
 import vueQr from 'vue-qr'
 export default {
+	props: {
+		simple: {
+			type: Boolean,
+			default: false
+		}
+	},
 	components: {
 		vueQr
 	},
 	computed: {
 		realPicturePath() {
+			console.log(
+				process.env.NODE_ENV === 'production'
+					? 'https://relics.wegfan.cn' + this.relicsData.picturePath
+					: this.relicsData.picturePath
+			)
+			if (!this.relicsData.picturePath) return ''
 			return process.env.NODE_ENV === 'production'
 				? 'https://relics.wegfan.cn' + this.relicsData.picturePath
 				: this.relicsData.picturePath
@@ -120,7 +122,10 @@ export default {
 				if (vm.api.relicsList.attrMap[mkey].type === 'img') continue
 				vm.dataInTable.push({
 					key: vm.api.relicsList.attrMap[mkey].value,
-					value: vm.api.relicsList.attrMap[mkey].type === 'Select' ? vm.api.relicsList.attrMap[mkey].selectMap[data[mkey]] : data[mkey]
+					value:
+						vm.api.relicsList.attrMap[mkey].type === 'Select'
+							? vm.api.relicsList.attrMap[mkey].selectMap[data[mkey]]
+							: data[mkey]
 				})
 			}
 		}

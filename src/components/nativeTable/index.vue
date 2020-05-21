@@ -69,7 +69,7 @@ export default {
 				.then(response => {
 					vm.tableData = response.data.data.content
 					vm.totalPage = response.data.data.totalPages
-					console.log('get data success');
+					console.log('get data success')
 					loading.close()
 				})
 				.catch(error => {

@@ -1,5 +1,6 @@
 <script>
 import { Message } from 'element-ui'
+import { mapGetters } from 'vuex'
 import vueQr from 'vue-qr'
 export default {
 	components: {
@@ -25,6 +26,9 @@ export default {
 		}
 	},
 	computed: {
+		hasDefaultAttr() {
+			return Object.keys(this.$attrs).length > 0
+		},
 		isCreateRelics() {
 			return this.inNeedApi.attrMap.id.value === '文物ID' && !this.dialogFormModel.id
 		},
@@ -33,18 +37,24 @@ export default {
 		},
 		canSearch() {
 			return Object.keys(this.formModel).length > 2
-		}
+		},
+		...mapGetters({
+			hasPermission: 'user/hasPermission'
+		})
 	},
 	created() {
 		// 初始化数据
-		this.getData()
 		this.initColumnModelList()
 		this.initInputModelList()
 		this.initDialogModelList()
 	},
+	mounted() {
+		this.getData()
+	},
 	methods: {
 		// 拉取数据
 		getData() {
+			console.log('get data');
 			const loading = this.$loading({
 				lock: true,
 				text: '加载中',
@@ -53,10 +63,13 @@ export default {
 			})
 			const vm = this
 			vm.inNeedApi
-				.func(vm.formModel)
+				.func({
+					...vm.formModel, ...vm.$attrs
+				})
 				.then(response => {
 					vm.tableData = response.data.data.content
 					vm.totalPage = response.data.data.totalPages
+					console.log('get data success');
 					loading.close()
 				})
 				.catch(error => {
@@ -70,7 +83,9 @@ export default {
 				this.$data,
 				'columnModelList',
 				Object.keys(this.inNeedApi.attrMap).filter(value => {
-					return this.inNeedApi.attrMap[value].owner.indexOf('result') !== -1
+					return (
+						this.inNeedApi.attrMap[value].owner.indexOf('result') !== -1
+					)
 				})
 			)
 		},
@@ -84,7 +99,11 @@ export default {
 				.forEach((currentValue, index, arr) => {
 					if (!(currentValue === 'page' || currentValue === 'count')) {
 						iList.push(currentValue)
-						this.$set(this.formModel, currentValue, '')
+						if (this.$attrs[currentValue]) {
+							this.$set(this.formModel, currentValue, this.$attrs[currentValue])
+						} else {
+							this.$set(this.formModel, currentValue, '')
+						}
 					}
 				})
 			this.$set(this.$data, 'inputModelList', iList)
@@ -99,7 +118,15 @@ export default {
 				.forEach((currentValue, index, arr) => {
 					this.$set(this.dialogFormModel, currentValue, '')
 					if (currentValue !== 'id') {
-						iList.push(currentValue)
+						if (
+							this.inNeedApi.attrMap[currentValue].permission
+								? this.hasPermission(
+										this.inNeedApi.attrMap[currentValue].permission
+								  )
+								: true
+						) {
+							iList.push(currentValue)
+						}
 					}
 				})
 			this.$set(this.$data, 'dialogModelList', iList)
@@ -174,6 +201,15 @@ export default {
 					console.log('delete fail', error)
 				})
 		},
+		// 根据 id 跳转到子表（如果有
+		jumpToChild(id) {
+			if (this.childRoute) {
+				const key = Object.keys(this.childRoute.query)[0]
+				this.childRoute.query[key] = id
+				this.$router.push(this.childRoute)
+			}
+		},
+		// 创建特殊情况
 		checkRelics() {
 			return {
 				display: this.isCreateRelics ? 'none' : 'inline'
@@ -192,9 +228,13 @@ export default {
 						selectArr.push(
 							h('el-option', {
 								props: {
-									key: isNaN(Number(selectProp)) ? selectProp : Number(selectProp),
+									key: isNaN(Number(selectProp))
+										? selectProp
+										: Number(selectProp),
 									label: vm.inNeedApi.attrMap[mprop].selectMap[selectProp],
-									value: isNaN(Number(selectProp)) ? selectProp : Number(selectProp)
+									value: isNaN(Number(selectProp))
+										? selectProp
+										: Number(selectProp)
 								}
 							})
 						)
@@ -233,9 +273,13 @@ export default {
 						selectArr.push(
 							h('el-option', {
 								props: {
-									key: isNaN(Number(selectProp)) ? selectProp : Number(selectProp),
+									key: isNaN(Number(selectProp))
+										? selectProp
+										: Number(selectProp),
 									label: vm.inNeedApi.attrMap[mprop].selectMap[selectProp],
-									value: isNaN(Number(selectProp)) ? selectProp : Number(selectProp)
+									value: isNaN(Number(selectProp))
+										? selectProp
+										: Number(selectProp)
 								}
 							})
 						)
@@ -441,9 +485,13 @@ export default {
 						selectArr.push(
 							h('el-option', {
 								props: {
-									key: isNaN(Number(selectProp)) ? selectProp : Number(selectProp),
+									key: isNaN(Number(selectProp))
+										? selectProp
+										: Number(selectProp),
 									label: vm.inNeedApi.attrMap[mprop].selectMap[selectProp],
-									value: isNaN(Number(selectProp)) ? selectProp : Number(selectProp)
+									value: isNaN(Number(selectProp))
+										? selectProp
+										: Number(selectProp)
 								}
 							})
 						)
@@ -470,7 +518,7 @@ export default {
 										},
 										on: {
 											input: function(event) {
-												console.log(event);
+												console.log(event)
 												vm.formModel[mprop] = event
 												vm.formModel = { ...vm.formModel }
 											}
@@ -487,9 +535,13 @@ export default {
 						selectArr.push(
 							h('el-option', {
 								props: {
-									key: isNaN(Number(selectProp)) ? selectProp : Number(selectProp),
+									key: isNaN(Number(selectProp))
+										? selectProp
+										: Number(selectProp),
 									label: vm.inNeedApi.attrMap[mprop].selectMap[selectProp],
-									value: isNaN(Number(selectProp)) ? selectProp : Number(selectProp)
+									value: isNaN(Number(selectProp))
+										? selectProp
+										: Number(selectProp)
 								}
 							})
 						)
@@ -659,9 +711,15 @@ export default {
 									var resultStr = ''
 									for (const permissionId of scope.row[mprop]) {
 										if (resultStr) {
-											resultStr = resultStr + ',\n' + vm.$store.getters.getPermissionById(permissionId).name
+											resultStr =
+												resultStr +
+												',\n' +
+												vm.$store.getters.getPermissionById(permissionId)
+													.name
 										} else {
-											resultStr = vm.$store.getters.getPermissionById(permissionId).name
+											resultStr = vm.$store.getters.getPermissionById(
+												permissionId
+											).name
 										}
 									}
 									return resultStr
@@ -800,7 +858,13 @@ export default {
 						props: {
 							data: this.tableData,
 							stripe: true,
-							border: true
+							border: true,
+							'highlight-current-row': true
+						},
+						on: {
+							'current-change': function(val) {
+								vm.jumpToChild(val.id)
+							}
 						}
 					},
 					buildTable(h)

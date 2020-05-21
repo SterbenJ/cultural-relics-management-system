@@ -49,6 +49,14 @@ export default [{
 				component: () => import('../views/warehouseManagement')
 			},
 			{
+				path: 'shelves-management',
+				name: 'shelvesManagement',
+				component: () => import('../views/shelvesManagement'),
+				props: (route) => {
+					return { ...route.query }
+				}
+			},
+			{
 				path: 'relics/:requestId',
 				name: 'relics',
 				component: () => import('../views/relics'),

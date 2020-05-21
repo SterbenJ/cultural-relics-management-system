@@ -20,6 +20,7 @@ function jobId() {
 }
 
 function jobIndex() {
+	console.log('to job index');
 	const id = jobId()
 	if (id === 5) {
 		return {

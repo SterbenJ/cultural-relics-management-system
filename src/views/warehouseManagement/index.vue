@@ -7,7 +7,13 @@ export default {
 			inNeedApi: this.api.warehousesList,
 			deleteApi: this.api.deleteWarehouse,
 			updateApi: this.api.updateWarehouse,
-			createApi: this.api.createWarehouse
+			createApi: this.api.createWarehouse,
+			childRoute: {
+				name: 'shelvesManagement',
+				query: {
+					warehouseId: ''
+				}
+			}
 		}
 	},
 	methods: {

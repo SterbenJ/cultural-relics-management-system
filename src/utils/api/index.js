@@ -84,7 +84,7 @@ export default {
 		attrMap: {
 			id: {
 				value: '职务ID',
-				type: 'String',
+				type: 'Number',
 				owner: ['result']
 			},
 			name: {
@@ -111,7 +111,7 @@ export default {
 		attrMap: {
 			id: {
 				value: '权限ID',
-				type: 'String',
+				type: 'Number',
 				owner: ['result']
 			}
 		},
@@ -148,12 +148,12 @@ export default {
 			},
 			page: {
 				value: '页码',
-				type: 'number',
+				type: 'Number',
 				owner: ['form']
 			},
 			count: {
 				value: '单页显示数',
-				type: 'number',
+				type: 'Number',
 				owner: ['form']
 			}
 		}
@@ -171,7 +171,7 @@ export default {
 		attrMap: {
 			id: {
 				value: '仓库ID',
-				type: 'String',
+				type: 'Number',
 				owner: ['result']
 			},
 			name: {
@@ -194,7 +194,7 @@ export default {
 		attrMap: {
 			id: {
 				value: '仓库ID',
-				type: 'String',
+				type: 'Number',
 				owner: ['request', 'result']
 			},
 			name: {
@@ -216,7 +216,7 @@ export default {
 		attrMap: {
 			id: {
 				value: '仓库ID',
-				type: 'String',
+				type: 'Number',
 				owner: ['request']
 			}
 		}
@@ -238,18 +238,20 @@ export default {
 		attrMap: {
 			id: {
 				value: '文物ID',
-				type: 'String',
+				type: 'Number',
 				owner: ['result', 'edit']
 			},
 			name: {
 				value: '名称',
 				type: 'String',
-				owner: ['form', 'result', 'edit']
+				owner: ['form', 'result', 'edit'],
+				permission: 5
 			},
 			quantity: {
 				value: '数量',
-				type: 'number',
-				owner: ['result', 'edit']
+				type: 'Number',
+				owner: ['result', 'edit'],
+				permission: 5
 			},
 			picturePath: {
 				value: '照片',
@@ -259,52 +261,62 @@ export default {
 			year: {
 				value: '年代',
 				type: 'String',
-				owner: ['result', 'edit']
+				owner: ['result', 'edit'],
+				permission: 5
 			},
 			reign: {
 				value: '年号',
 				type: 'String',
-				owner: ['result', 'edit']
+				owner: ['result', 'edit'],
+				permission: 5
 			},
 			type: {
 				value: '器型',
 				type: 'String',
-				owner: ['result', 'edit']
+				owner: ['result', 'edit'],
+				permission: 5
 			},
 			source: {
 				value: '来源',
 				type: 'String',
-				owner: ['result', 'edit']
+				owner: ['result', 'edit'],
+				permission: 5
 			},
 			size: {
 				value: '尺寸',
 				type: 'String',
-				owner: ['result', 'edit']
+				owner: ['result', 'edit'],
+				permission: 5
 			},
 			weight: {
 				value: '重量',
-				type: 'number',
-				owner: ['result', 'edit']
+				type: 'Number',
+				owner: ['result', 'edit'],
+				permission: 5
 			},
 			warehouseId: {
 				value: '收储仓库ID',
-				type: 'number',
-				owner: ['result', 'edit']
+				type: 'Number',
+				owner: ['result', 'edit'],
+				permission: 5
 			},
 			shelfId: {
 				value: '收储货架ID',
-				type: 'String',
-				owner: ['result', 'edit']
+				type: 'Number',
+				owner: ['result', 'edit'],
+				permission: 5
 			},
 			enterPrice: {
 				value: '入馆价值',
-				type: 'number',
-				owner: ['result']
+				type: 'Number',
+				owner: ['result', 'edit'],
+				permission: 7
 			},
 			leavePrice: {
 				value: '离馆价值',
-				type: 'String',
-				owner: ['result']
+				type: 'Number',
+				owner: ['result', 'edit'],
+				permission: 7
 			},
 			statusId: {
 				value: '文物状态',
@@ -316,7 +328,8 @@ export default {
 					3: '外借',
 					4: '修理',
 					5: '离馆'
-				}
+				},
+				permission: 5
 			},
 			lastCheckTime: {
 				value: '最后盘点时间',
@@ -326,27 +339,32 @@ export default {
 			enterTime: {
 				value: '入馆时间',
 				type: 'date',
-				owner: ['result']
+				owner: ['result'],
+				permission: 2
 			},
 			leaveTime: {
 				value: '离馆时间',
 				type: 'date',
-				owner: ['result']
+				owner: ['result'],
+				permission: 2
 			},
 			moveTime: {
 				value: '移入仓库时间',
 				type: 'date',
-				owner: ['result']
+				owner: ['result'],
+				permission: 2
 			},
 			lendTime: {
 				value: '出借时间',
 				type: 'date',
-				owner: ['result']
+				owner: ['result'],
+				permission: 2
 			},
 			fixTime: {
 				value: '送修时间',
 				type: 'date',
-				owner: ['result']
+				owner: ['result'],
+				permission: 2
 			},
 			updateTime: {
 				value: '更新时间',
@@ -356,12 +374,14 @@ export default {
 			comment1: {
 				value: '备注1',
 				type: 'String',
-				owner: ['result', 'edit']
+				owner: ['result', 'edit'],
+				permission: 5
 			},
 			comment2: {
 				value: '备注2',
 				type: 'String',
-				owner: ['result', 'edit']
+				owner: ['result', 'edit'],
+				permission: 5
 			},
 			status: {
 				value: '状态',
@@ -378,12 +398,12 @@ export default {
 			},
 			page: {
 				value: '页码',
-				type: 'number',
+				type: 'Number',
 				owner: ['form']
 			},
 			count: {
 				value: '单页显示数',
-				type: 'number',
+				type: 'Number',
 				owner: ['form']
 			},
 			from: {
@@ -454,12 +474,12 @@ export default {
 		attrMap: {
 			id: {
 				value: '编号',
-				type: 'String',
+				type: 'Number',
 				owner: ['result', 'edit']
 			},
 			workId: {
 				value: '工号',
-				type: 'String',
+				type: 'Number',
 				owner: ['result', 'edit']
 			},
 			name: {
@@ -491,12 +511,12 @@ export default {
 			},
 			page: {
 				value: '页码',
-				type: 'number',
+				type: 'Number',
 				owner: ['form']
 			},
 			count: {
 				value: '单页显示数',
-				type: 'number',
+				type: 'Number',
 				owner: ['form']
 			}
 		}
@@ -529,6 +549,76 @@ export default {
 		func(data) {
 			return axios({
 				url: '/users/' + data.id,
+				method: 'DELETE'
+			})
+		}
+	},
+
+	// 获取货架
+	shelvesList: {
+		func(data) {
+			return axios({
+				url: '/shelves',
+				methods: 'GET',
+				params: data
+			})
+		},
+		attrMap: {
+			id: {
+				value: '货架ID',
+				type: 'Number',
+				owner: ['result', 'edit']
+			},
+			name: {
+				value: '名称',
+				type: 'String',
+				owner: ['result', 'edit', 'form']
+			},
+			warehouseId: {
+				value: '仓库ID',
+				type: 'Number',
+				owner: ['result', 'edit', 'form']
+			},
+			page: {
+				value: '页码',
+				type: 'Number',
+				owner: ['form']
+			},
+			count: {
+				value: '单页显示数',
+				type: 'Number',
+				owner: ['form']
+			}
+		}
+	},
+
+	// 创建货架
+	createShelves: {
+		func(data) {
+			return axios({
+				url: '/shelves',
+				method: 'POST',
+				data: data
+			})
+		}
+	},
+
+	// 更新货架,
+	updateShelves: {
+		func(data) {
+			return axios({
+				url: '/shelves/' + data.id,
+				method: 'PUT',
+				data: data
+			})
+		}
+	},
+
+	// 删除货架
+	deleteShelves: {
+		func(data) {
+			return axios({
+				url: '/shelves/' + data.id,
 				method: 'DELETE'
 			})
 		}

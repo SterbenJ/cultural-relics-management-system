@@ -60,10 +60,18 @@
 						</el-menu-item>
 					</el-submenu>
 					<!-- 仓库管理 -->
-					<el-menu-item v-if="hasPermission(2)" index="warehouseManagement" :route="{ name: 'warehouseManagement' }">
-						<i class="el-icon-house"></i>
-						<span slot="title">仓库管理</span>
-					</el-menu-item>
+					<el-submenu v-if="hasPermission(2)" index="3">
+						<template slot="title">
+							<i class="el-icon-house"></i>
+							<span slot="title">仓库管理</span>
+						</template>
+						<el-menu-item index="warehouseManagement" :route="{ name: 'warehouseManagement' }">
+							仓库管理
+						</el-menu-item>
+						<el-menu-item index="shelvesManagement" :route="{ name: 'shelvesManagement' }">
+							货架管理
+						</el-menu-item>
+					</el-submenu>
 					<!-- 成员管理 -->
 					<el-menu-item v-if="hasPermission(1)" index="memberManagement" :route="{ name: 'memberManagement' }">
 						<i class="el-icon-school"></i>

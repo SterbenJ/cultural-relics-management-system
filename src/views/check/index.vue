@@ -284,6 +284,7 @@ export default {
 			const targetId = this.getId()
 			if (!targetId) {
 				Message.error('数据有误，请重新扫码')
+				return
 			}
 			this.dialogFormModel.relicsId = targetId
 			this.showInfoDialog = true

@@ -298,6 +298,7 @@ export default {
 		for (const closeStream of this.streamObj.getTracks()) {
 			closeStream.stop()
 		}
+		this.streamObj = null
 	}
 }
 </script>

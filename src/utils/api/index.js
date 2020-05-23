@@ -668,8 +668,8 @@ export default {
 				type: 'Number',
 				owner: ['result']
 			},
-			notCheckCount: {
-				value: '未盘点文物个数(盘点异常)',
+			abnormalCount: {
+				value: '异常文物数',
 				type: 'Number',
 				owner: ['result']
 			},

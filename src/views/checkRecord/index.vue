@@ -24,9 +24,9 @@
 					<div class="tip-point success"></div>
 					<span class="font-text-extra-samll" style="font-size: 13px;">已盘点无异常</span>
 					<div class="tip-point warning"></div>
-					<span class="font-text-extra-samll" style="font-size: 13px;">已盘点有异常</span>
-					<div class="tip-point"></div>
-					<span class="font-text-extra-samll" style="font-size: 13px;">未盘点</span>
+					<span class="font-text-extra-samll" style="font-size: 13px;">异常/未盘点</span>
+					<!-- <div class="tip-point"></div>
+					<span class="font-text-extra-samll" style="font-size: 13px;">未盘点</span> -->
 				</div>
 				<el-table
 					:data="tableData"
@@ -42,7 +42,7 @@
 					<el-table-column prop="name" :label="api.checkRelicsList.attrMap.name.value" />
 					<!-- 文物图片 -->
 					<el-table-column
-						width="120"
+						width="122"
 						prop="picturePath"
 						:label="api.checkRelicsList.attrMap.picturePath.value"
 					>
@@ -153,15 +153,15 @@ export default {
 		},
 		// 根据数据切换表格强调色
 		tableRowClassName({ row, rowIndex }) {
-			if (row.checkTime) {
-				if (row.newWarehouseId === row.oldWarehouseId && row.newShelfId === row.oldShelfId) {
+			// if (row.checkTime) {
+				if (row.newWarehouseId === row.oldWarehouseId && row.newShelfId === row.oldShelfId && !!row.checkTime) {
 					return 'success-row'
 				} else {
 					return 'warning-row'
 				}
-			} else {
-				return ''
-			}
+			// } else {
+			// 	return ''
+			// }
 		},
 		// 继续盘点
 		keepCheck() {

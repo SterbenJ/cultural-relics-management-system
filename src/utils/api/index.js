@@ -413,8 +413,7 @@ export default {
 					3: '外借',
 					4: '修理',
 					5: '离馆'
-				},
-				selectDefault: 2
+				}
 			},
 			page: {
 				value: '页码',
@@ -641,6 +640,173 @@ export default {
 				url: '/shelves/' + data.id,
 				method: 'DELETE'
 			})
+		}
+	},
+
+	// 文物盘点列表
+	checkList: {
+		func(data) {
+			return axios({
+				url: '/checks',
+				method: 'GET',
+				params: data
+			})
+		},
+		attrMap: {
+			id: {
+				value: '盘点ID',
+				type: 'Number',
+				owner: ['result']
+			},
+			warehouseId: {
+				value: '盘点仓库ID',
+				type: 'Number',
+				owner: ['result', 'form']
+			},
+			checkCount: {
+				value: '盘点文物个数',
+				type: 'Number',
+				owner: ['result']
+			},
+			notCheckCount: {
+				value: '未盘点文物个数(盘点异常)',
+				type: 'Number',
+				owner: ['result']
+			},
+			startTime: {
+				value: '盘点开始时间',
+				type: 'date',
+				owner: ['result']
+			},
+			endTime: {
+				value: '盘点结束时间',
+				type: 'date',
+				owner: ['result']
+			}
+		}
+	},
+
+	// 某次盘点
+	checkRelicsList: {
+		func(data) {
+			const id = data.id
+			delete data.id
+			return axios({
+				url: '/checks/' + id + '/relics',
+				method: 'GET',
+				params: data
+			})
+		},
+		attrMap: {
+			relicId: {
+				value: '文物ID',
+				type: 'Number',
+				owner: ['result']
+			},
+			name: {
+				value: '文物名称',
+				type: 'StrIng',
+				owner: ['result']
+			},
+			picturePath: {
+				value: '照片',
+				type: 'img',
+				owner: ['result']
+			},
+			oldWarehouseId: {
+				value: '盘点前收储仓库ID',
+				type: 'Number',
+				owner: ['result']
+			},
+			oldShelfId: {
+				value: '盘点前收储货架ID',
+				type: 'Number',
+				owner: ['result']
+			},
+			newWarehouseId: {
+				value: '盘点后收储仓库ID',
+				type: 'Number',
+				owner: ['result']
+			},
+			newShelfId: {
+				value: '盘点后收储货架ID',
+				type: 'Number',
+				owner: ['result']
+			},
+			operatorName: {
+				value: '盘点人姓名',
+				type: 'String',
+				owner: ['result']
+			},
+			checkTime: {
+				value: '盘点时间',
+				type: 'date',
+				owner: ['result']
+			},
+			checked: {
+				value: '状态',
+				type: 'Select',
+				owner: ['form'],
+				selectMap: {
+					true: '已盘点',
+					false: '未盘点'
+				}
+			}
+		}
+	},
+
+	// 开始一次盘点
+	createCheck: {
+		func(data) {
+			return axios({
+				url: '/checks/sessions',
+				method: 'POST',
+				data: data
+			})
+		},
+		attrMap: {
+			warehouseId: {
+				value: '盘点仓库ID',
+				type: 'Number',
+				owner: ['form']
+			}
+		}
+	},
+
+	// 结束某盘点
+	finishCheck: {
+		func(data) {
+			return axios({
+				url: '/checks/sessions/' + data.id,
+				method: 'DELETE'
+			})
+		}
+	},
+
+	// 盘点
+	check: {
+		func(data) {
+			const checkId = data.checkId
+			const relicsId = data.relicsId
+			delete data.checkId
+			delete data.relicsId
+			return axios({
+				url: '/checks/' + checkId + '/relics/' + relicsId,
+				method: 'PUT',
+				data: data
+			})
+		},
+		attrMap: {
+			warehouseId: {
+				value: '当前仓库ID',
+				type: 'Number',
+				owner: ['edit']
+			},
+			shelfId: {
+				value: '当前货架ID',
+				type: 'Number',
+				owner: ['edit']
+			}
 		}
 	}
 }

@@ -10,6 +10,12 @@ export default [{
 		component: () => import('../views/login')
 	},
 	{
+		path: '/check/:id',
+		name: 'check',
+		component: () => import('../views/check'),
+		props: true
+	},
+	{
 		path: '/index',
 		component: () => import('../views/index'),
 		children: [{
@@ -21,18 +27,29 @@ export default [{
 			{
 				path: 'cultural-relics-list',
 				name: 'culturalRelicsList',
-				component: () => import('../views/culturalRelicsList')
+				component: () => import('../views/culturalRelicsList'),
+				meta: {
+					keepAlive: true
+				}
+			},
+			{
+				path: 'check-record-list',
+				name: 'checkRecordList',
+				component: () => import('../views/checkRecordList')
 			},
 			{
 				path: 'check-record',
 				name: 'checkRecord',
-				component: () => import('../views/checkRecord')
+				component: () => import('../views/checkRecord'),
+				props: (route) => {
+					return { ...route.query }
+				}
 			},
-			{
-				path: 'cultural-relics-need-touch',
-				name: 'culturalRelicsNeedTouch',
-				component: () => import('../views/culturalRelicsNeedTouch')
-			},
+			// {
+			// 	path: 'cultural-relics-need-touch',
+			// 	name: 'culturalRelicsNeedTouch',
+			// 	component: () => import('../views/culturalRelicsNeedTouch')
+			// },
 			{
 				path: 'operation-record',
 				name: 'operationRecord',
@@ -46,7 +63,15 @@ export default [{
 			{
 				path: 'warehouse-management',
 				name: 'warehouseManagement',
-				component: () => import('../views/warehouseManagement')
+				component: () => import('../views/warehouseManagement'),
+				meta: {
+					keepAlive: true
+				}
+			},
+			{
+				path: 'init-check',
+				name: 'initCheck',
+				component: () => import('../views/initCheck')
 			},
 			{
 				path: 'shelves-management',

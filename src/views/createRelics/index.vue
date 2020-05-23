@@ -7,7 +7,6 @@
 			with-credentials
 			:show-file-list="false"
 			list-type="picture-card"
-			:limit="1"
 			:on-success="onSuccess"
 			:on-error="onError">
 			<i class="el-icon-plus"></i>

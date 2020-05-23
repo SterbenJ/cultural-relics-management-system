@@ -46,9 +46,9 @@
 							待录文物
 						</el-menu-item> -->
 						<el-menu-item
-							v-if="hasPermission(10)"
-							index="checkRecord"
-							:route="{ name: 'checkRecord' }"
+							v-if="hasPermission(8)"
+							index="checkRecordList"
+							:route="{ name: 'checkRecordList' }"
 						>
 							盘点记录
 						</el-menu-item>
@@ -91,10 +91,24 @@
 						<i class="el-icon-school"></i>
 						<span slot="title">成员管理</span>
 					</el-menu-item>
+					<!-- 新建盘点入口 -->
+					<el-menu-item
+						v-if="hasPermission(8)"
+						index="initCheck"
+						:route="{ name: 'initCheck' }"
+					>
+						<i class="el-icon-s-order"></i>
+						<span slot="title">盘点</span>
+					</el-menu-item>
 					<el-menu-item index="test" :route="{ name: 'test' }">
 						<span slot="title">测试</span>
 					</el-menu-item>
-					<el-menu-item v-show="!collapsed" @click="toAuthor" class="author-item">
+					<el-menu-item
+						index="4"
+						v-show="!collapsed"
+						@click="toAuthor"
+						class="author-item"
+					>
 						author @NoraH1to
 					</el-menu-item>
 				</el-menu>
@@ -129,7 +143,15 @@
 				</el-header>
 				<el-scrollbar ref="scrollbar" style="height:100%">
 					<el-main>
-						<transition name="el-fade-in-linear"><router-view /></transition>
+						<transition name="el-fade-in-linear">
+							<keep-alive>
+								<router-view v-if="this.$route.meta.keepAlive"></router-view>
+								<!--这里是会被缓存的组件-->
+							</keep-alive>
+						</transition>
+						<transition name="el-fade-in-linear">
+							<router-view v-if="!this.$route.meta.keepAlive"></router-view>
+						</transition>
 					</el-main>
 				</el-scrollbar>
 			</el-container>
@@ -168,8 +190,6 @@ export default {
 	watch: {
 		// 检测 当前路由地址的变化, 路由地址发生改变时, router-view 显示的路由改变时需要将滚动条复位到顶部
 		'$route.path'(newValue, oldValue) {
-			console.log(oldValue, typeof oldValue, '$route.path oldValue')
-			console.log(newValue, typeof newValue, '$route.path newValue')
 			// 通过 ref 拿到 el-scrollbar 的实例对象( vue 实例对象)
 			const scrollbar = this.$refs.scrollbar
 			// scrollbar 的实例对象相当于在 el-scrollbar 组件里面的 this

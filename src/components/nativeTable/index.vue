@@ -22,21 +22,42 @@ export default {
 			},
 			totalPage: 0,
 			dialogVisible: false,
-			dialogFormModel: {}
+			dialogFormModel: {},
+			loading: true
 		}
 	},
 	computed: {
+		// 判断有无默认索引参数
 		hasDefaultAttr() {
 			return Object.keys(this.$attrs).length > 0
 		},
+		// 是否为创建文物的dialog
 		isCreateRelics() {
 			return this.inNeedApi.attrMap.id.value === '文物ID' && !this.dialogFormModel.id
 		},
+		// 是否为文物列表
 		isRelics() {
 			return this.inNeedApi.attrMap.id.value === '文物ID'
 		},
+		// 是否有检索选项
 		canSearch() {
 			return Object.keys(this.formModel).length > 2
+		},
+		// 是否可以新建
+		canCreate() {
+			return !!this.createApi
+		},
+		// 是否可以更新（编辑）
+		canUpdate() {
+			return !!this.updateApi
+		},
+		// 是否可以删除
+		canDelete() {
+			return !!this.deleteApi
+		},
+		// 是否有操作格子
+		hasTableAction() {
+			return this.canUpdate || this.canDelete
 		},
 		...mapGetters({
 			hasPermission: 'user/hasPermission'
@@ -54,7 +75,8 @@ export default {
 	methods: {
 		// 拉取数据
 		getData() {
-			console.log('get data');
+			console.log('get data')
+			this.loading = true
 			const loading = this.$loading({
 				lock: true,
 				text: '加载中',
@@ -64,17 +86,20 @@ export default {
 			const vm = this
 			vm.inNeedApi
 				.func({
-					...vm.formModel, ...vm.$attrs
+					...vm.formModel,
+					...vm.$attrs
 				})
 				.then(response => {
 					vm.tableData = response.data.data.content
 					vm.totalPage = response.data.data.totalPages
 					console.log('get data success')
 					loading.close()
+					this.loading = false
 				})
 				.catch(error => {
 					console.log('get data fail', error)
 					loading.close()
+					this.loading = false
 				})
 		},
 		// 初始化表格属性列表
@@ -83,9 +108,7 @@ export default {
 				this.$data,
 				'columnModelList',
 				Object.keys(this.inNeedApi.attrMap).filter(value => {
-					return (
-						this.inNeedApi.attrMap[value].owner.indexOf('result') !== -1
-					)
+					return this.inNeedApi.attrMap[value].owner.indexOf('result') !== -1
 				})
 			)
 		},
@@ -326,7 +349,8 @@ export default {
 							[
 								h('el-input', {
 									props: {
-										value: vm.dialogFormModel[mprop]
+										value: vm.dialogFormModel[mprop],
+										clearable: true
 									},
 									on: {
 										input: function(event) {
@@ -506,7 +530,8 @@ export default {
 								props: {
 									label: vm.inNeedApi.attrMap[mprop].value,
 									prop: mprop
-								}
+								},
+								ref: mprop
 							},
 							[
 								h(
@@ -518,8 +543,7 @@ export default {
 										},
 										on: {
 											input: function(event) {
-												console.log(event)
-												vm.formModel[mprop] = event
+												vm.$set(vm.formModel, mprop, event)
 												vm.formModel = { ...vm.formModel }
 											}
 										}
@@ -588,7 +612,8 @@ export default {
 							[
 								h('el-input', {
 									props: {
-										value: vm.formModel[mprop]
+										value: vm.formModel[mprop],
+										clearable: true
 									},
 									on: {
 										input: function(event) {
@@ -738,163 +763,190 @@ export default {
 					)
 				}
 			}
-			arr.push(
-				h('el-table-column', {
-					props: {
-						label: '操作',
-						width: '100',
-						fixed: 'right'
-					},
-					scopedSlots: {
-						// 表头对应的内容， 里面可根据需求自定义
-						default: scope => {
-							return [
-								h(
-									'el-button',
-									{
-										props: {
-											type: 'text',
-											size: 'small'
-										},
-										on: {
-											click: function(e) {
-												event.stopPropagation()
-												for (const mprop of vm.dialogModelList) {
-													if (scope.row[mprop]) {
-														vm.dialogFormModel[mprop] = scope.row[mprop]
-													} else {
-														vm.dialogFormModel[mprop] = ''
-													}
-												}
-												vm.dialogFormModel.id = scope.row.id
-												vm.dialogVisible = true
-											}
-										}
-									},
-									'编辑'
-								),
-								h(
-									'el-popconfirm',
-									{
-										props: {
-											title: '确定删除？操作不可撤销'
-										},
-										on: {
-											onConfirm: function() {
-												vm.deleteItem()
-											}
-										},
-										style: {
-											'margin-left': '5px'
-										}
-									},
-									[
-										h(
-											'el-button',
-											{
-												props: {
-													type: 'text',
-													size: 'small'
-												},
-												on: {
-													click: function(e) {
-														event.stopPropagation()
-														const tmpList = Object.keys(scope.row)
-														for (const mprop of tmpList) {
+			if (vm.hasTableAction) {
+				arr.push(
+					h('el-table-column', {
+						props: {
+							label: '操作',
+							width: '100',
+							fixed: 'right'
+						},
+						scopedSlots: {
+							// 表头对应的内容， 里面可根据需求自定义
+							default: scope => {
+								return [
+									h(
+										'el-button',
+										{
+											props: {
+												type: 'text',
+												size: 'small'
+											},
+											style: {
+												display: vm.canUpdate ? '' : 'none'
+											},
+											on: {
+												click: function(e) {
+													event.stopPropagation()
+													for (const mprop of vm.dialogModelList) {
+														if (scope.row[mprop]) {
 															vm.dialogFormModel[mprop] =
 																scope.row[mprop]
+														} else {
+															vm.dialogFormModel[mprop] = ''
 														}
 													}
-												},
-												slot: 'reference'
+													vm.dialogFormModel.id = scope.row.id
+													vm.dialogVisible = true
+												}
+											}
+										},
+										'编辑'
+									),
+									h(
+										'el-popconfirm',
+										{
+											props: {
+												title: '确定删除？操作不可撤销'
 											},
-											'删除'
-										)
-									]
-								)
-							]
+											style: {
+												display: vm.canDelete ? '' : 'none',
+												'margin-left': '5px'
+											},
+											on: {
+												onConfirm: function() {
+													vm.deleteItem()
+												}
+											}
+										},
+										[
+											h(
+												'el-button',
+												{
+													props: {
+														type: 'text',
+														size: 'small'
+													},
+													on: {
+														click: function(e) {
+															event.stopPropagation()
+															const tmpList = Object.keys(scope.row)
+															for (const mprop of tmpList) {
+																vm.dialogFormModel[mprop] =
+																	scope.row[mprop]
+															}
+														}
+													},
+													slot: 'reference'
+												},
+												'删除'
+											)
+										]
+									)
+								]
+							}
 						}
-					}
-				})
-			)
+					})
+				)
+			}
 			return arr
 		}
 		return h(
-			'div',
+			'transition',
 			{
-				attrs: {
-					id: 'managent-table-container'
+				props: {
+					name: 'el-zoom-in-top'
 				}
 			},
 			[
-				buildDialog(h),
-				h('el-button', {
-					props: {
-						type: 'primary'
-					},
-					domProps: {
-						innerHTML: '新 增'
-					},
-					style: {
-						'margin-bottom': '15px'
-					},
-					on: {
-						click: function(event) {
-							vm.dialogVisible = true
-						}
-					}
-				}),
 				h(
-					'el-form',
+					'div',
 					{
-						props: {
-							model: vm.formModel,
-							inline: true
-						}
-					},
-					buildForm(h)
-				),
-				h(
-					'el-table',
-					{
-						props: {
-							data: this.tableData,
-							stripe: true,
-							border: true,
-							'highlight-current-row': true
+						attrs: {
+							id: 'managent-table-container'
 						},
-						on: {
-							'current-change': function(val) {
-								vm.jumpToChild(val.id)
+						style: { display: this.loading ? 'none' : undefined },
+						directives: [
+							{
+								name: 'show',
+								value: !this.loading
 							}
-						}
+						]
 					},
-					buildTable(h)
-				),
-				h('el-pagination', {
-					props: {
-						background: true,
-						'current-page': vm.formModel.page,
-						'page-sizes': [10, 20],
-						'page-size': vm.formModel.count,
-						'page-count': vm.totalPage,
-						layout: 'sizes, prev, pager, next'
-					},
-					on: {
-						'size-change': function(newVal) {
-							vm.formModel.count = newVal
-							vm.getData()
-						},
-						'current-change': function(newVal) {
-							vm.formModel.page = newVal
-							vm.getData()
-						}
-					},
-					style: {
-						'text-align': 'center',
-						margin: '20px'
-					}
-				})
+					[
+						buildDialog(h),
+						h('el-button', {
+							props: {
+								type: 'primary'
+							},
+							domProps: {
+								innerHTML: '新 增'
+							},
+							style: {
+								'margin-bottom': '15px',
+								display: vm.canCreate ? undefined : 'none'
+							},
+							on: {
+								click: function(event) {
+									vm.dialogVisible = true
+								}
+							}
+						}),
+						h(
+							'el-form',
+							{
+								props: {
+									model: vm.formModel,
+									inline: true
+								},
+								ref: 'formModel'
+							},
+							buildForm(h)
+						),
+						h(
+							'el-table',
+							{
+								props: {
+									data: this.tableData,
+									stripe: true,
+									border: true,
+									'highlight-current-row': true
+								},
+								on: {
+									'row-click': function(event) {
+										vm.jumpToChild(event.id)
+									}
+								}
+							},
+							buildTable(h)
+						),
+						h('el-pagination', {
+							props: {
+								background: true,
+								'current-page': vm.formModel.page,
+								'page-sizes': [10, 20],
+								'page-size': vm.formModel.count,
+								'page-count': vm.totalPage,
+								'pager-count': 5,
+								layout: 'sizes, prev, pager, next'
+							},
+							on: {
+								'size-change': function(newVal) {
+									vm.formModel.count = newVal
+									vm.getData()
+								},
+								'current-change': function(newVal) {
+									vm.formModel.page = newVal
+									vm.getData()
+								}
+							},
+							style: {
+								'text-align': 'center',
+								margin: '20px'
+							}
+						})
+					]
+				)
 			]
 		)
 	}

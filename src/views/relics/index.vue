@@ -2,8 +2,8 @@
 	<div>
 		<el-row id="relics-container">
 			<el-col :span="22" :offset="1">
-				<el-row v-if="!simple" :gutter="20">
-					<el-col :span="10" :offset="2">
+				<el-row :gutter="20">
+					<el-col v-if="!simple" :span="10" :offset="2">
 						<transition name="el-zoom-in-top">
 							<vue-qr
 								v-show="!loading"
@@ -15,7 +15,7 @@
 							/>
 						</transition>
 					</el-col>
-					<el-col :span="10">
+					<el-col :span="simple ? 14 : 10" :offset="simple ? 5 : 0">
 						<transition name="el-zoom-in-top">
 							<el-image
 								v-show="!loading"
@@ -46,6 +46,10 @@ export default {
 		simple: {
 			type: Boolean,
 			default: false
+		},
+		id: {
+			type: Number,
+			required: false
 		}
 	},
 	components: {
@@ -53,11 +57,6 @@ export default {
 	},
 	computed: {
 		realPicturePath() {
-			console.log(
-				process.env.NODE_ENV === 'production'
-					? 'https://relics.wegfan.cn' + this.relicsData.picturePath
-					: this.relicsData.picturePath
-			)
 			if (!this.relicsData.picturePath) return ''
 			return process.env.NODE_ENV === 'production'
 				? 'https://relics.wegfan.cn' + this.relicsData.picturePath
@@ -96,18 +95,40 @@ export default {
 			}
 		}
 	},
+	watch: {
+		'$attrs.relicsId': {
+			handler(newVal, oldVal) {
+				if (newVal) {
+					this.getRelics()
+				}
+			},
+			immediate: true
+		},
+		id: {
+			handler(newVal, oldVal) {
+				if (newVal) {
+					this.getRelics(newVal)
+				}
+			},
+			immediate: true
+		}
+	},
 	methods: {
 		// 获得文物数据
-		getRelics() {
+		getRelics(propId) {
 			const vm = this
+			vm.loading = true
 			vm.api.relics
 				.func({
-					id: vm.$attrs.relicsId
+					/* eslint-disable */
+					id: propId ? propId : vm.$attrs.relicsId,
+					/* eslint- */
 				})
 				.then(res => {
 					vm.relicsData = res.data.data
 					vm.translateToTable(vm.relicsData)
 					vm.loading = false
+					console.log('get relics success');
 				})
 				.catch(err => {
 					console.log('get relics fail', err)
@@ -117,6 +138,7 @@ export default {
 		// 整合文物数据格式用来放入table
 		translateToTable(data) {
 			const vm = this
+			vm.dataInTable = []
 			const keys = Object.keys(data)
 			for (const mkey of keys) {
 				if (vm.api.relicsList.attrMap[mkey].type === 'img') continue
@@ -132,11 +154,9 @@ export default {
 	},
 	mounted() {
 		// 没有参数就利用路由跳转到对应 job 的 index
-		if (Object.keys(this.$attrs) < 0) {
+		if (Object.keys(this.$attrs) < 0 && !this.id) {
 			this.$router.push({ name: 'login' })
-			return
 		}
-		this.getRelics()
 	}
 }
 </script>

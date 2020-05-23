@@ -1,4 +1,6 @@
 ## How to run it?
-1. run command `npm run serve`</br>
+1. `npm install`</br>
 
-2. then `http://localhost:8080`
+2. `npm run serve`</br>
+
+3. then `http://localhost:8080`

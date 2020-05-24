@@ -2,9 +2,19 @@ import axios from './customAxios.js'
 import store from '../../store'
 
 function escapeAttr(data) {
-	for (const key in data) {
-		data[key] = escape(data[key])
-	}
+	// const result = {}
+	// for (const key in data) {
+	// 	let tmpStr = ''
+	// 	for (const char of String(data[key])) {
+	// 		if (escape(char).indexOf('%u') !== -1) {
+	// 			tmpStr = tmpStr + char
+	// 		} else {
+	// 			tmpStr = tmpStr + escape(char)
+	// 		}
+	// 	}
+	// 	result[key] = tmpStr
+	// }
+	// return result
 	return data
 }
 

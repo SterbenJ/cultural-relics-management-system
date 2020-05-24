@@ -95,8 +95,8 @@
 					:page-sizes="[10, 20]"
 					:page-count="totalPage"
 					:pager-count="5"
-					@current-change="getData"
-					@size-change="getData"
+					@current-change="handlerCurrentChange"
+					@size-change="handlerPageSizeChange"
 				></el-pagination>
 			</el-row>
 		</transition>
@@ -112,6 +112,7 @@ export default {
 				page: 1,
 				checked: ''
 			},
+			currentFormModel: {},
 			tableData: [],
 			totalPage: 0,
 			loading: true
@@ -123,21 +124,41 @@ export default {
 				this.getData()
 			},
 			immediate: true
+		},
+		'formModel.page': {
+			handler(newVal, oldVal) {
+				this.currentFormModel.page = newVal
+			},
+			immediate: true
+		},
+		'formModel.count': {
+			handler(newVal, oldVal) {
+				this.currentFormModel.count = newVal
+			},
+			immediate: true
 		}
 	},
 	methods: {
 		// 获取数据
-		getData() {
+		getData(changePage) {
 			const vm = this
 			vm.loading = true
 			vm.api.checkRelicsList
-				.func({
+				.func(changePage ? {
+					id: vm.$attrs.id,
+					...vm.currentFormModel
+				} : {
 					id: vm.$attrs.id,
 					...vm.formModel
 				})
 				.then(res => {
 					vm.tableData = res.data.data.content
 					vm.totalPage = res.data.data.totalPages
+					if (!changePage) {
+						vm.currentFormModel = {
+							...vm.formModel
+						}
+					}
 					vm.loading = false
 					console.log('get checkRecode success')
 				})
@@ -171,6 +192,16 @@ export default {
 		// 继续盘点
 		keepCheck() {
 			this.$router.push('/check/' + this.$attrs.id)
+		},
+		handlerCurrentChange(newVal) {
+			this.currentFormModel.page = newVal
+			this.formModel.page = newVal
+			this.getData(true)
+		},
+		handlerPageSizeChange(newVal) {
+			this.currentFormModel.count = newVal
+			this.formModel.count = newVal
+			this.getData(true)
 		}
 	}
 }

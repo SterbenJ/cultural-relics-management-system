@@ -20,10 +20,12 @@ export default {
 				page: 1,
 				count: 10
 			},
+			currentFormModel: {},
 			totalPage: 0,
 			dialogVisible: false,
 			dialogFormModel: {},
-			loading: true
+			loading: true,
+			hasFormChange: false
 		}
 	},
 	computed: {
@@ -76,9 +78,19 @@ export default {
 		}
 		this.getData()
 	},
+	watch: {
+		formModel: {
+			handler: function(newVal, oldVal) {
+				if (newVal.page === oldVal.page) {
+					this.hasFormChange = true
+				}
+			},
+			deep: true
+		}
+	},
 	methods: {
 		// 拉取数据
-		getData() {
+		getData(changePage) {
 			console.log('get data')
 			this.loading = true
 			const loading = this.$loading({
@@ -89,10 +101,15 @@ export default {
 			})
 			const vm = this
 			vm.inNeedApi
-				.func(vm.formModel)
+				.func(changePage ? vm.currentFormModel : vm.formModel)
 				.then(response => {
 					vm.tableData = response.data.data.content
 					vm.totalPage = response.data.data.totalPages
+					if (!changePage) {
+						vm.currentFormModel = {
+							...vm.formModel
+						}
+					}
 					console.log('get data success')
 					loading.close()
 					this.loading = false
@@ -930,6 +947,11 @@ export default {
 									model: vm.formModel,
 									inline: true
 								},
+								on: {
+									input: function() {
+										console.log('input')
+									}
+								},
 								ref: 'formModel'
 							},
 							buildForm(h)
@@ -954,9 +976,9 @@ export default {
 						h('el-pagination', {
 							props: {
 								background: true,
-								'current-page': vm.formModel.page,
+								'current-page': vm.currentFormModel.page,
 								'page-sizes': [10, 20],
-								'page-size': vm.formModel.count,
+								'page-size': vm.currentFormModel.count,
 								'page-count': vm.totalPage,
 								'pager-count': 5,
 								layout: 'sizes, prev, pager, next'
@@ -964,11 +986,13 @@ export default {
 							on: {
 								'size-change': function(newVal) {
 									vm.formModel.count = newVal
-									vm.getData()
+									vm.currentFormModel.count = newVal
+									vm.getData(true)
 								},
 								'current-change': function(newVal) {
 									vm.formModel.page = newVal
-									vm.getData()
+									vm.currentFormModel.page = newVal
+									vm.getData(true)
 								}
 							},
 							style: {

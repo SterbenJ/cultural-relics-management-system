@@ -17,7 +17,7 @@
 							></el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item><el-button @click="getData">检 索</el-button></el-form-item>
+					<el-form-item><el-button @click="search">检 索</el-button></el-form-item>
 					<el-form-item><el-button @click="keepCheck" type="warning">继续盘点</el-button></el-form-item>
 				</el-form>
 				<div id="tip-container">
@@ -145,6 +145,11 @@ export default {
 					console.log('get checkRecode fail', err)
 					vm.loading = false
 				})
+		},
+		// 检索
+		search() {
+			this.formModel.page = 1
+			this.getData()
 		},
 		// 根据环境切换请求图片地址
 		realPicturePath(path) {

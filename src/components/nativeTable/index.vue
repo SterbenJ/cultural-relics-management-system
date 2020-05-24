@@ -70,6 +70,10 @@ export default {
 		this.initDialogModelList()
 	},
 	mounted() {
+		this.formModel = {
+			...this.formModel,
+			...this.$attrs
+		}
 		this.getData()
 	},
 	methods: {
@@ -85,10 +89,7 @@ export default {
 			})
 			const vm = this
 			vm.inNeedApi
-				.func({
-					...vm.formModel,
-					...vm.$attrs
-				})
+				.func(vm.formModel)
 				.then(response => {
 					vm.tableData = response.data.data.content
 					vm.totalPage = response.data.data.totalPages
@@ -204,7 +205,7 @@ export default {
 				})
 		},
 		// 删除条目
-		deleteItem() {
+		deleteItem(id) {
 			const loading = this.$loading({
 				lock: true,
 				text: '删除中',
@@ -213,7 +214,9 @@ export default {
 			})
 			const vm = this
 			vm.deleteApi
-				.func(vm.dialogFormModel)
+				.func({
+					id
+				})
 				.then(response => {
 					console.log('delete success')
 					loading.close()
@@ -240,10 +243,35 @@ export default {
 		}
 	},
 	render: function(h) {
+		function emptyInput(h) {
+			return h(
+				'el-form-item',
+				{
+					props: {
+						label: ''
+					},
+					style: {
+						display: 'none'
+					}
+				},
+				[
+					h('el-input', {
+						props: {
+							value: ''
+						},
+						on: {
+							input: function(event) {}
+						}
+					})
+				]
+			)
+		}
 		const vm = this
 		// 构建编辑/创建 Dialog
 		function buildDialog(h) {
 			const arr = []
+			// 空 input 防止回车刷新
+			arr.push(emptyInput(h))
 			for (const mprop of vm.dialogModelList) {
 				if (vm.inNeedApi.attrMap[mprop].type === 'Select') {
 					const selectArr = []
@@ -473,6 +501,8 @@ export default {
 		// 构建表单
 		function buildForm(h) {
 			const arr = []
+			// 添加一个空 input 防止回车键刷新页面
+			arr.push(emptyInput(h))
 			for (const mprop of vm.inputModelList) {
 				// 时间类型特殊点
 				if (vm.inNeedApi.attrMap[mprop].type === 'date') {
@@ -636,6 +666,7 @@ export default {
 							},
 							on: {
 								click: function(event) {
+									vm.formModel.page = 1
 									vm.getData()
 								}
 							}
@@ -815,7 +846,7 @@ export default {
 											},
 											on: {
 												onConfirm: function() {
-													vm.deleteItem()
+													vm.deleteItem(scope.row.id)
 												}
 											}
 										},
@@ -830,11 +861,11 @@ export default {
 													on: {
 														click: function(e) {
 															event.stopPropagation()
-															const tmpList = Object.keys(scope.row)
-															for (const mprop of tmpList) {
-																vm.dialogFormModel[mprop] =
-																	scope.row[mprop]
-															}
+															// const tmpList = Object.keys(scope.row)
+															// for (const mprop of tmpList) {
+															// 	vm.dialogFormModel[mprop] =
+															// 		scope.row[mprop]
+															// }
 														}
 													},
 													slot: 'reference'

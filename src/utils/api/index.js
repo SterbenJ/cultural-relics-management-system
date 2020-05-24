@@ -1,6 +1,13 @@
 import axios from './customAxios.js'
 import store from '../../store'
 
+function escapeAttr(data) {
+	for (const key in data) {
+		data[key] = escape(data[key])
+	}
+	return data
+}
+
 export default {
 	// 登录
 	login: {
@@ -132,7 +139,7 @@ export default {
 			return axios({
 				url: '/warehouses',
 				method: 'GET',
-				params: data
+				params: escapeAttr(data)
 			})
 		},
 		attrMap: {
@@ -242,7 +249,7 @@ export default {
 			return axios({
 				url: '/relics',
 				method: 'GET',
-				params: data
+				params: escapeAttr(data)
 			})
 		},
 		attrMap: {
@@ -487,7 +494,7 @@ export default {
 			return axios({
 				url: '/users',
 				method: 'GET',
-				params: data
+				params: escapeAttr(data)
 			})
 		},
 		attrMap: {
@@ -579,7 +586,7 @@ export default {
 			return axios({
 				url: '/shelves',
 				methods: 'GET',
-				params: data
+				params: escapeAttr(data)
 			})
 		},
 		attrMap: {
@@ -649,7 +656,7 @@ export default {
 			return axios({
 				url: '/checks',
 				method: 'GET',
-				params: data
+				params: escapeAttr(data)
 			})
 		},
 		attrMap: {
@@ -694,7 +701,7 @@ export default {
 			return axios({
 				url: '/checks/' + id + '/relics',
 				method: 'GET',
-				params: data
+				params: escapeAttr(data)
 			})
 		},
 		attrMap: {

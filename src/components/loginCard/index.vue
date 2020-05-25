@@ -92,7 +92,7 @@ export default {
 				vm.logining = false
 				return
 			}
-			this.api
+			await this.api
 				.login
 				.func(vm.formModel)
 				.then(response => {

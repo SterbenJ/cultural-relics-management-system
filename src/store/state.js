@@ -1,4 +1,4 @@
 export default {
-	jobs: [],
-	permissions: []
+	jobs: {},
+	permissions: {}
 }

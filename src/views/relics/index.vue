@@ -146,7 +146,7 @@ export default {
 					key: vm.api.relicsList.attrMap[mkey].value,
 					value:
 						vm.api.relicsList.attrMap[mkey].type === 'Select'
-							? vm.api.relicsList.attrMap[mkey].selectMap[data[mkey]]
+							? vm.api.relicsList.attrMap[mkey].selectMap()[data[mkey]]
 							: data[mkey]
 				})
 			}

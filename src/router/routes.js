@@ -16,6 +16,11 @@ export default [{
 		props: true
 	},
 	{
+		path: '/scan-editInfo',
+		name: 'scanEditInfo',
+		component: () => import('../views/scanEditInfo')
+	},
+	{
 		path: '/index',
 		component: () => import('../views/index'),
 		children: [{
@@ -45,11 +50,6 @@ export default [{
 					return { ...route.query }
 				}
 			},
-			// {
-			// 	path: 'cultural-relics-need-touch',
-			// 	name: 'culturalRelicsNeedTouch',
-			// 	component: () => import('../views/culturalRelicsNeedTouch')
-			// },
 			{
 				path: 'operation-record',
 				name: 'operationRecord',

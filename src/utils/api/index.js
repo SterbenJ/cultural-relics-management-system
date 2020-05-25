@@ -359,12 +359,14 @@ export default {
 				value: '文物状态',
 				type: 'Select',
 				owner: ['result', 'edit'],
-				selectMap: {
-					1: '待评估',
-					2: '在馆',
-					3: '外借',
-					4: '修理',
-					5: '离馆'
+				selectMap() {
+					return {
+						1: '待评估',
+						2: '在馆',
+						3: '外借',
+						4: '修理',
+						5: '离馆'
+					}
 				},
 				permission: 5
 			},
@@ -424,12 +426,14 @@ export default {
 				value: '状态',
 				type: 'Select',
 				owner: ['form'],
-				selectMap: {
-					1: '待评估',
-					2: '在馆',
-					3: '外借',
-					4: '修理',
-					5: '离馆'
+				selectMap() {
+					return {
+						1: '待评估',
+						2: '在馆',
+						3: '外借',
+						4: '修理',
+						5: '离馆'
+					}
 				}
 			},
 			page: {
@@ -456,11 +460,13 @@ export default {
 				value: '时间类型',
 				type: 'Select',
 				owner: ['form'],
-				selectMap: {
-					enter: '入馆时间',
-					leave: '离馆时间',
-					lend: '外借时间',
-					fix: '送修时间'
+				selectMap() {
+					return {
+						enter: '入馆时间',
+						leave: '离馆时间',
+						lend: '外借时间',
+						fix: '送修时间'
+					}
 				}
 			}
 		}
@@ -527,13 +533,17 @@ export default {
 				value: '职务',
 				type: 'Select',
 				owner: ['result', 'edit'],
-				selectMap: store.getters.getJobSelectMap
+				selectMap() {
+					return store.getters.getJobSelectMap
+				}
 			},
 			extraPermissionsId: {
 				value: '额外权限',
 				type: 'mulitSelect',
 				owner: ['result', 'edit'],
-				selectMap: store.getters.getPermissionSelectMap
+				selectMap() {
+					return store.getters.getPermissionSelectMap
+				}
 			},
 			telephone: {
 				value: '手机号',
@@ -764,9 +774,11 @@ export default {
 				value: '状态',
 				type: 'Select',
 				owner: ['form'],
-				selectMap: {
-					true: '已盘点',
-					false: '未盘点'
+				selectMap() {
+					return {
+						true: '已盘点',
+						false: '未盘点'
+					}
 				}
 			}
 		}

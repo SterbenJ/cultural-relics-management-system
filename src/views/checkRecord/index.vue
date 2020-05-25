@@ -8,12 +8,12 @@
 							<el-option
 								:key="true"
 								:value="true"
-								:label="api.checkRelicsList.attrMap.checked.selectMap.true"
+								:label="api.checkRelicsList.attrMap.checked.selectMap().true"
 							></el-option>
 							<el-option
 								:key="false"
 								:value="false"
-								:label="api.checkRelicsList.attrMap.checked.selectMap.false"
+								:label="api.checkRelicsList.attrMap.checked.selectMap().false"
 							></el-option>
 						</el-select>
 					</el-form-item>

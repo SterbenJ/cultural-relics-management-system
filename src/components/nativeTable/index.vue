@@ -292,14 +292,14 @@ export default {
 			for (const mprop of vm.dialogModelList) {
 				if (vm.inNeedApi.attrMap[mprop].type === 'Select') {
 					const selectArr = []
-					for (const selectProp in vm.inNeedApi.attrMap[mprop].selectMap) {
+					for (const selectProp in vm.inNeedApi.attrMap[mprop].selectMap()) {
 						selectArr.push(
 							h('el-option', {
 								props: {
 									key: isNaN(Number(selectProp))
 										? selectProp
 										: Number(selectProp),
-									label: vm.inNeedApi.attrMap[mprop].selectMap[selectProp],
+									label: vm.inNeedApi.attrMap[mprop].selectMap()[selectProp],
 									value: isNaN(Number(selectProp))
 										? selectProp
 										: Number(selectProp)
@@ -337,14 +337,14 @@ export default {
 					)
 				} else if (vm.inNeedApi.attrMap[mprop].type === 'mulitSelect') {
 					const selectArr = []
-					for (const selectProp in vm.inNeedApi.attrMap[mprop].selectMap) {
+					for (const selectProp in vm.inNeedApi.attrMap[mprop].selectMap()) {
 						selectArr.push(
 							h('el-option', {
 								props: {
 									key: isNaN(Number(selectProp))
 										? selectProp
 										: Number(selectProp),
-									label: vm.inNeedApi.attrMap[mprop].selectMap[selectProp],
+									label: vm.inNeedApi.attrMap[mprop].selectMap()[selectProp],
 									value: isNaN(Number(selectProp))
 										? selectProp
 										: Number(selectProp)
@@ -552,14 +552,14 @@ export default {
 					)
 				} else if (vm.inNeedApi.attrMap[mprop].type === 'Select') {
 					const selectArr = []
-					for (const selectProp in vm.inNeedApi.attrMap[mprop].selectMap) {
+					for (const selectProp in vm.inNeedApi.attrMap[mprop].selectMap()) {
 						selectArr.push(
 							h('el-option', {
 								props: {
 									key: isNaN(Number(selectProp))
 										? selectProp
 										: Number(selectProp),
-									label: vm.inNeedApi.attrMap[mprop].selectMap[selectProp],
+									label: vm.inNeedApi.attrMap[mprop].selectMap()[selectProp],
 									value: isNaN(Number(selectProp))
 										? selectProp
 										: Number(selectProp)
@@ -602,14 +602,14 @@ export default {
 					)
 				} else if (vm.inNeedApi.attrMap[mprop].type === 'mulitSelect') {
 					const selectArr = []
-					for (const selectProp in vm.inNeedApi.attrMap[mprop].selectMap) {
+					for (const selectProp in vm.inNeedApi.attrMap[mprop].selectMap()) {
 						selectArr.push(
 							h('el-option', {
 								props: {
 									key: isNaN(Number(selectProp))
 										? selectProp
 										: Number(selectProp),
-									label: vm.inNeedApi.attrMap[mprop].selectMap[selectProp],
+									label: vm.inNeedApi.attrMap[mprop].selectMap()[selectProp],
 									value: isNaN(Number(selectProp))
 										? selectProp
 										: Number(selectProp)
@@ -766,7 +766,7 @@ export default {
 							},
 							scopedSlots: {
 								default: scope => {
-									return vm.inNeedApi.attrMap[mprop].selectMap[scope.row[mprop]]
+									return vm.inNeedApi.attrMap[mprop].selectMap()[scope.row[mprop]]
 								}
 							}
 						})
@@ -787,12 +787,9 @@ export default {
 											resultStr =
 												resultStr +
 												',\n' +
-												vm.$store.getters.getPermissionById(permissionId)
-													.name
+												vm.inNeedApi.attrMap[mprop].selectMap()[permissionId]
 										} else {
-											resultStr = vm.$store.getters.getPermissionById(
-												permissionId
-											).name
+											resultStr = vm.inNeedApi.attrMap[mprop].selectMap()[permissionId]
 										}
 									}
 									return resultStr

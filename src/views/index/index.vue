@@ -98,11 +98,19 @@
 						:route="{ name: 'initCheck' }"
 					>
 						<i class="el-icon-s-order"></i>
-						<span slot="title">盘点</span>
+						<span slot="title">盘点文物</span>
 					</el-menu-item>
-					<el-menu-item index="test" :route="{ name: 'test' }">
+					<el-menu-item
+						v-if="hasPermission(5) || hasPermission(7) || hasPermission(4)"
+						index="scanEditInfo"
+						:route="{ name: 'scanEditInfo' }"
+					>
+						<i class="el-icon-edit"></i>
+						<span slot="title">扫码查看文物信息</span>
+					</el-menu-item>
+					<!-- <el-menu-item index="test" :route="{ name: 'test' }">
 						<span slot="title">测试</span>
-					</el-menu-item>
+					</el-menu-item> -->
 					<el-menu-item
 						index="4"
 						v-show="!collapsed"

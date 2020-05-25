@@ -272,13 +272,13 @@ export default {
 				value: '名称',
 				type: 'String',
 				owner: ['form', 'result', 'edit'],
-				permission: 5
+				permission: [5]
 			},
 			quantity: {
 				value: '数量',
 				type: 'Number',
 				owner: ['result', 'edit'],
-				permission: 5
+				permission: [5]
 			},
 			picturePath: {
 				value: '照片',
@@ -289,43 +289,43 @@ export default {
 				value: '年代',
 				type: 'String',
 				owner: ['result', 'edit'],
-				permission: 5
+				permission: [5]
 			},
 			reign: {
 				value: '年号',
 				type: 'String',
 				owner: ['result', 'edit'],
-				permission: 5
+				permission: [5]
 			},
 			type: {
 				value: '器型',
 				type: 'String',
 				owner: ['result', 'edit'],
-				permission: 5
+				permission: [5]
 			},
 			source: {
 				value: '来源',
 				type: 'String',
 				owner: ['result', 'edit'],
-				permission: 5
+				permission: [5]
 			},
 			size: {
 				value: '尺寸',
 				type: 'String',
 				owner: ['result', 'edit'],
-				permission: 5
+				permission: [5]
 			},
 			weight: {
 				value: '重量 (千克)',
 				type: 'Number',
 				owner: ['result', 'edit'],
-				permission: 5
+				permission: [5]
 			},
 			warehouseId: {
 				value: '收储仓库ID',
 				type: 'Number',
 				owner: ['result', 'edit'],
-				permission: 5
+				permission: [9]
 			},
 			warehouse: {
 				value: '仓库ID',
@@ -341,19 +341,19 @@ export default {
 				value: '收储货架ID',
 				type: 'Number',
 				owner: ['result', 'edit'],
-				permission: 5
+				permission: [9]
 			},
 			enterPrice: {
 				value: '入馆价值 (人民币)',
 				type: 'Number',
 				owner: ['result', 'edit'],
-				permission: 7
+				permission: [7]
 			},
 			leavePrice: {
 				value: '离馆价值 (人民币)',
 				type: 'Number',
 				owner: ['result', 'edit'],
-				permission: 7
+				permission: [7]
 			},
 			statusId: {
 				value: '文物状态',
@@ -368,7 +368,7 @@ export default {
 						5: '离馆'
 					}
 				},
-				permission: 5
+				permission: [6, 14]
 			},
 			lastCheckTime: {
 				value: '最后盘点时间',
@@ -384,26 +384,22 @@ export default {
 			leaveTime: {
 				value: '离馆时间',
 				type: 'date',
-				owner: ['result'],
-				permission: 2
+				owner: ['result']
 			},
 			moveTime: {
 				value: '移入仓库时间',
 				type: 'date',
-				owner: ['result'],
-				permission: 2
+				owner: ['result']
 			},
 			lendTime: {
 				value: '出借时间',
 				type: 'date',
-				owner: ['result'],
-				permission: 2
+				owner: ['result']
 			},
 			fixTime: {
 				value: '送修时间',
 				type: 'date',
-				owner: ['result'],
-				permission: 2
+				owner: ['result']
 			},
 			updateTime: {
 				value: '更新时间',
@@ -414,13 +410,13 @@ export default {
 				value: '备注1',
 				type: 'String',
 				owner: ['result', 'edit'],
-				permission: 5
+				permission: [5]
 			},
 			comment2: {
 				value: '备注2',
 				type: 'String',
 				owner: ['result', 'edit'],
-				permission: 5
+				permission: [5]
 			},
 			status: {
 				value: '状态',

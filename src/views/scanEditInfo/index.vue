@@ -71,7 +71,7 @@
 				>
 					没有权限
 				</div>
-				<el-form :model="dialogFormModel">
+				<el-form :model="dialogFormModel" label-position="top">
 					<el-form-item
 						v-for="value in dialogModelList"
 						:key="value"
@@ -93,7 +93,13 @@
 				</el-form>
 				<div slot="footer" class="dialog-footer">
 					<el-button @click="showEditDialog = false">取 消</el-button>
-					<el-button v-if="dialogModelList.length > 0" type="primary" @click="updateRelics">确认更改</el-button>
+					<el-button
+						v-if="dialogModelList.length > 0"
+						type="primary"
+						@click="updateRelics"
+					>
+						确认更改
+					</el-button>
 				</div>
 			</el-dialog>
 		</scan>
@@ -142,14 +148,16 @@ export default {
 				.forEach((currentValue, index, arr) => {
 					this.$set(this.dialogFormModel, currentValue, '')
 					if (currentValue !== 'id') {
-						if (
-							this.api.relicsList.attrMap[currentValue].permission
-								? this.hasPermission(
-										this.api.relicsList.attrMap[currentValue].permission
-								  )
-								: true
-						) {
+						if (!this.api.relicsList.attrMap[currentValue].permission) {
 							iList.push(currentValue)
+						} else {
+							for (const tmpPermission of this.api.relicsList.attrMap[currentValue]
+								.permission) {
+								if (this.hasPermission(tmpPermission)) {
+									iList.push(currentValue)
+									break
+								}
+							}
 						}
 					}
 				})

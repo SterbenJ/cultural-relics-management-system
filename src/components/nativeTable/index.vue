@@ -159,14 +159,15 @@ export default {
 				.forEach((currentValue, index, arr) => {
 					this.$set(this.dialogFormModel, currentValue, '')
 					if (currentValue !== 'id') {
-						if (
-							this.inNeedApi.attrMap[currentValue].permission
-								? this.hasPermission(
-										this.inNeedApi.attrMap[currentValue].permission
-								  )
-								: true
-						) {
+						if (!this.inNeedApi.attrMap[currentValue].permission) {
 							iList.push(currentValue)
+						} else {
+							for (const tmpPermission of this.inNeedApi.attrMap[currentValue].permission) {
+								if (this.hasPermission(tmpPermission)) {
+									iList.push(currentValue)
+									break
+								}
+							}
 						}
 					}
 				})

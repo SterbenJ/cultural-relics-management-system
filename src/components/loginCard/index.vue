@@ -74,7 +74,23 @@ export default {
 				]
 			},
 			logining: false,
-			validateState: true
+			validateState: true,
+			permissionSuccess: false,
+			jobSuccess: false,
+			loginSuccess: false
+		}
+	},
+	computed: {
+		hasSuccess() {
+			return this.permissionSuccess && this.jobSuccess && this.loginSuccess
+		}
+	},
+	watch: {
+		hasSuccess(newVal, oldVal) {
+			if (newVal) {
+				this.logining = false
+				this.jumpToIndex()
+			}
 		}
 	},
 	methods: {
@@ -96,12 +112,12 @@ export default {
 				.login
 				.func(vm.formModel)
 				.then(response => {
-					vm.logining = false
 					// 获取权限、职务列表
 					vm.api
 						.jobList.func()
 						.then(response => {
 							vm.updateJobsData(response.data.data)
+							vm.jobSuccess = true
 						})
 						.catch(error => {
 							console.log('get jobs fail', error);
@@ -111,6 +127,7 @@ export default {
 						.func()
 						.then(response => {
 							vm.updatePermissionsData(response.data.data)
+							vm.permissionSuccess = true
 						})
 						.catch(error => {
 							console.log('get permissions fail', error);
@@ -118,7 +135,7 @@ export default {
 					// 更新用户信息
 					vm.updateUserData(response.data.data)
 					if (response.data.msg === 'success') {
-						vm.jumpToIndex()
+						vm.loginSuccess = true
 					}
 				})
 				.catch(error => {

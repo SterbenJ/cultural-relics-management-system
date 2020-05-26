@@ -25,7 +25,9 @@ export default {
 			dialogVisible: false,
 			dialogFormModel: {},
 			loading: true,
-			hasFormChange: false
+			hasFormChange: false,
+			remoteOptions: {},
+			remoteOptionsState: {}
 		}
 	},
 	computed: {
@@ -140,10 +142,16 @@ export default {
 				.forEach((currentValue, index, arr) => {
 					if (!(currentValue === 'page' || currentValue === 'count')) {
 						iList.push(currentValue)
+						// 判断有无默认值
 						if (this.$attrs[currentValue]) {
 							this.$set(this.formModel, currentValue, this.$attrs[currentValue])
 						} else {
 							this.$set(this.formModel, currentValue, '')
+						}
+						// 初始化远程加载selectOption
+						if (this.inNeedApi.attrMap[currentValue].type === 'remoteSelect') {
+							this.$set(this.remoteOptions, currentValue + 'Options', [])
+							this.$set(this.remoteOptionsState, currentValue + 'Loading', false)
 						}
 					}
 				})
@@ -162,9 +170,21 @@ export default {
 						if (!this.inNeedApi.attrMap[currentValue].permission) {
 							iList.push(currentValue)
 						} else {
-							for (const tmpPermission of this.inNeedApi.attrMap[currentValue].permission) {
+							for (const tmpPermission of this.inNeedApi.attrMap[currentValue]
+								.permission) {
 								if (this.hasPermission(tmpPermission)) {
 									iList.push(currentValue)
+									// 初始化远程加载selectOption
+									if (
+										this.inNeedApi.attrMap[currentValue].type === 'remoteSelect'
+									) {
+										this.$set(this.remoteOptions, currentValue + 'Options', [])
+										this.$set(
+											this.remoteOptionsState,
+											currentValue + 'Loading',
+											false
+										)
+									}
 									break
 								}
 							}
@@ -374,6 +394,83 @@ export default {
 										on: {
 											input: function(event) {
 												vm.dialogFormModel[mprop] = event
+											}
+										}
+									},
+									selectArr
+								)
+							]
+						)
+					)
+				} else if (vm.inNeedApi.attrMap[mprop].type === 'remoteSelect') {
+					const selectArr = []
+					for (const selectProp in vm.remoteOptions[mprop + 'Options']) {
+						const id = vm.remoteOptions[mprop + 'Options'][selectProp].id
+						const name = vm.remoteOptions[mprop + 'Options'][selectProp].name
+						selectArr.push(
+							h('el-option', {
+								props: {
+									key: isNaN(Number(id)) ? id : Number(id),
+									label: name,
+									value: isNaN(Number(id)) ? id : Number(id)
+								}
+							})
+						)
+					}
+					arr.push(
+						h(
+							'el-form-item',
+							{
+								props: {
+									label: vm.inNeedApi.attrMap[mprop].value,
+									prop: mprop,
+									loading: vm.remoteOptionsState[mprop + 'Loading']
+								},
+								style: vm.checkRelics(),
+								ref: mprop
+							},
+							[
+								h(
+									'el-select',
+									{
+										props: {
+											value: vm.dialogFormModel[mprop],
+											clearable: true
+											// disabled: vm.inNeedApi.attrMap[mprop].selectParent
+											// 	? !vm.dialogFormModel[
+											// 			vm.inNeedApi.attrMap[mprop].selectParent
+											// 	  ]
+											// 	: false
+										},
+										on: {
+											input: function(event) {
+												vm.$set(vm.dialogFormModel, mprop, event)
+												vm.dialogFormModel = { ...vm.dialogFormModel }
+											},
+											'visible-change': function(event) {
+												// 打开的时候加载远程选项
+												if (event) {
+													vm.remoteOptionsState[mprop + 'Loading'] = true
+													// 有父select就根据父找当前选项
+													vm.inNeedApi.attrMap[mprop].remoteSelectApi(
+														vm.inNeedApi.attrMap[mprop].selectParent
+															? vm.dialogFormModel[
+																	vm.inNeedApi.attrMap[mprop]
+																		.selectParent
+															  ]
+															: undefined
+													).then(res => {
+														console.log('get ' + mprop + ' options success');
+														vm.remoteOptions[mprop + 'Options'] = res.data.data
+													}).catch(err => {
+														console.log('get ' + mprop + ' options fail', err);
+													})
+												}
+											},
+											change: function() {
+												if (vm.inNeedApi.attrMap[mprop].selectChild) {
+													vm.dialogFormModel[vm.inNeedApi.attrMap[mprop].selectChild] = ''
+												}
 											}
 										}
 									},
@@ -647,6 +744,82 @@ export default {
 							]
 						)
 					)
+				} else if (vm.inNeedApi.attrMap[mprop].type === 'remoteSelect') {
+					const selectArr = []
+					for (const selectProp in vm.remoteOptions[mprop + 'Options']) {
+						const id = vm.remoteOptions[mprop + 'Options'][selectProp].id
+						const name = vm.remoteOptions[mprop + 'Options'][selectProp].name
+						selectArr.push(
+							h('el-option', {
+								props: {
+									key: isNaN(Number(id)) ? id : Number(id),
+									label: name,
+									value: isNaN(Number(id)) ? id : Number(id)
+								}
+							})
+						)
+					}
+					arr.push(
+						h(
+							'el-form-item',
+							{
+								props: {
+									label: vm.inNeedApi.attrMap[mprop].value,
+									prop: mprop,
+									loading: vm.remoteOptionsState[mprop + 'Loading']
+								},
+								ref: mprop
+							},
+							[
+								h(
+									'el-select',
+									{
+										props: {
+											value: vm.formModel[mprop],
+											clearable: true
+											// disabled: vm.inNeedApi.attrMap[mprop].selectParent
+											// 	? !vm.formModel[
+											// 			vm.inNeedApi.attrMap[mprop].selectParent
+											// 	  ]
+											// 	: false
+										},
+										on: {
+											input: function(event) {
+												vm.$set(vm.formModel, mprop, event)
+												vm.formModel = { ...vm.formModel }
+											},
+											'visible-change': function(event) {
+												// 打开的时候加载远程选项
+												if (event) {
+													vm.remoteOptionsState[mprop + 'Loading'] = true
+													// 有父select就根据父找当前选项
+													vm.inNeedApi.attrMap[mprop].remoteSelectApi(
+														vm.inNeedApi.attrMap[mprop].selectParent
+															? vm.formModel[
+																	vm.inNeedApi.attrMap[mprop]
+																		.selectParent
+															  ]
+															: undefined
+													).then(res => {
+														console.log('get ' + mprop + ' options success');
+														vm.remoteOptions[mprop + 'Options'] = res.data.data
+													}).catch(err => {
+														console.log('get ' + mprop + ' options fail', err);
+													})
+												}
+											},
+											change: function() {
+												if (vm.inNeedApi.attrMap[mprop].selectChild) {
+													vm.formModel[vm.inNeedApi.attrMap[mprop].selectChild] = ''
+												}
+											}
+										}
+									},
+									selectArr
+								)
+							]
+						)
+					)
 				} else {
 					arr.push(
 						h(
@@ -788,9 +961,13 @@ export default {
 											resultStr =
 												resultStr +
 												',\n' +
-												vm.inNeedApi.attrMap[mprop].selectMap()[permissionId]
+												vm.inNeedApi.attrMap[mprop].selectMap()[
+													permissionId
+												]
 										} else {
-											resultStr = vm.inNeedApi.attrMap[mprop].selectMap()[permissionId]
+											resultStr = vm.inNeedApi.attrMap[mprop].selectMap()[
+												permissionId
+											]
 										}
 									}
 									return resultStr

@@ -30,7 +30,6 @@ export default {
 		for (const mprop of Object.keys(tmp)) {
 			selectMap[state.jobs[mprop].id] = state.jobs[mprop].name
 		}
-		console.log('getJobSelectMap', selectMap);
 		return selectMap
 	},
 	// 获取权限selectMap对象
@@ -40,7 +39,6 @@ export default {
 		for (const mprop of Object.keys(tmp)) {
 			selectMap[state.permissions[mprop].id] = state.permissions[mprop].name
 		}
-		console.log('getPermissionSelectMap', selectMap);
 		return selectMap
 	}
 }

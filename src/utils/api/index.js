@@ -18,6 +18,29 @@ function escapeAttr(data) {
 	return data
 }
 
+/**
+ *  其它
+ */
+
+// 获得仓库ID列表
+function warehousesIdList() {
+	return axios({
+		url: '/warehouses',
+		method: 'GET'
+	})
+}
+
+// 获得货架ID列表
+function shelvesIdList(id) {
+	return axios({
+		url: '/shelves',
+		method: 'GET',
+		params: {
+			warehouseId: id
+		}
+	})
+}
+
 export default {
 	// 登录
 	login: {
@@ -323,25 +346,33 @@ export default {
 			},
 			warehouseId: {
 				value: '收储仓库ID',
-				type: 'Number',
+				type: 'remoteSelect',
 				owner: ['result', 'edit'],
-				permission: [9]
+				permission: [9],
+				remoteSelectApi: warehousesIdList,
+				selectChild: 'shelfId'
 			},
 			warehouse: {
 				value: '仓库ID',
-				type: 'Number',
-				owner: ['form']
+				type: 'remoteSelect',
+				owner: ['form'],
+				remoteSelectApi: warehousesIdList,
+				selectChild: 'shelf'
 			},
 			shelf: {
 				value: '货架ID',
-				type: 'Number',
-				owner: ['form']
+				type: 'remoteSelect',
+				owner: ['form'],
+				remoteSelectApi: shelvesIdList,
+				selectParent: 'warehouse'
 			},
 			shelfId: {
 				value: '收储货架ID',
-				type: 'Number',
+				type: 'remoteSelect',
 				owner: ['result', 'edit'],
-				permission: [9]
+				permission: [9],
+				remoteSelectApi: shelvesIdList,
+				selectParent: 'warehouseId'
 			},
 			enterPrice: {
 				value: '入馆价值 (人民币)',
@@ -500,6 +531,10 @@ export default {
 		}
 	},
 
+	/**
+	 *  用户管理
+	 */
+
 	// 获取用户信息
 	userList: {
 		func(data) {
@@ -575,7 +610,7 @@ export default {
 		}
 	},
 
-	// 更新文物,
+	// 更新用户,
 	updateUser: {
 		func(data) {
 			return axios({
@@ -595,6 +630,10 @@ export default {
 			})
 		}
 	},
+
+	/**
+	 *  货架
+	 */
 
 	// 获取货架
 	shelvesList: {
@@ -665,6 +704,10 @@ export default {
 			})
 		}
 	},
+
+	/**
+	 *  盘点
+	 */
 
 	// 文物盘点列表
 	checkList: {

@@ -54,16 +54,35 @@
 				<relics :simple="true" :id="dialogFormModel.relicsId" />
 				<el-form ref="dialogFormRef" :model="dialogFormModel">
 					<el-form-item prop="warehouseId" :label="api.check.attrMap.warehouseId.value">
-						<el-input
+						<el-select
+							clearable
 							v-model="dialogFormModel.warehouseId"
 							placeholder="若无变更则留空"
-						></el-input>
+							@visible-change="getWarehouseList"
+							@change="dialogFormModel.shelfId = ''"
+						>
+							<el-option
+								v-for="item in warehouseList"
+								:key="item.id"
+								:value="item.id"
+								:label="item.name"
+							></el-option>
+						</el-select>
 					</el-form-item>
 					<el-form-item prop="shelfId" :label="api.check.attrMap.shelfId.value">
-						<el-input
+						<el-select
+							clearable
 							v-model="dialogFormModel.shelfId"
 							placeholder="若无变更则留空"
-						></el-input>
+							@visible-change="getShelfList"
+						>
+							<el-option
+								v-for="item in shelfList"
+								:key="item.id"
+								:value="item.id"
+								:label="item.name"
+							></el-option>
+						</el-select>
 					</el-form-item>
 				</el-form>
 				<div slot="footer" class="dialog-footer">
@@ -82,13 +101,8 @@
 </template>
 
 <script>
-// eslint-disable-next-line no-unused-vars
-// import adapter from 'webrtc-adapter'
-// WebRTC适配器 只需要引入就ok
-// import jsQR from 'jsqr'
 import scan from '../../components/scan'
 import relics from '../relics'
-// import { Message } from 'element-ui'
 export default {
 	props: {
 		id: {
@@ -122,7 +136,11 @@ export default {
 			warehouseId: undefined,
 			shelfId: undefined
 		},
-		dialogLoading: false
+		dialogLoading: false,
+		// 仓库列表
+		warehouseList: [],
+		// 货架列表
+		shelfList: []
 	}),
 	methods: {
 		// 监听扫码暂停开始
@@ -175,8 +193,27 @@ export default {
 			this.dialogFormModel.relicsId = targetId
 			this.showInfoDialog = true
 		},
+		// 开始获取画面
 		openScan() {
 			this.$refs.scan.openScan()
+		},
+		// 获得仓库列表
+		getWarehouseList() {
+			const vm = this
+			this.api.relicsList.attrMap.warehouseId.remoteSelectApi().then(res => {
+				vm.warehouseList = res.data.data
+			}).catch(err => {
+				console.log('get warehouse list fail', err);
+			})
+		},
+		// 获得货架列表
+		getShelfList() {
+			const vm = this
+			this.api.relicsList.attrMap.shelfId.remoteSelectApi(this.dialogFormModel.warehouseId).then(res => {
+				vm.shelfList = res.data.data
+			}).catch(err => {
+				console.log('get shelf list fail', err);
+			})
 		}
 	}
 }

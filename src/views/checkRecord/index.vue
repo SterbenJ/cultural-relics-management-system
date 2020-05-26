@@ -54,25 +54,25 @@
 							/>
 						</template>
 					</el-table-column>
-					<!-- 盘点前仓库id -->
+					<!-- 盘点前仓库 -->
 					<el-table-column
-						prop="oldWarehouseId"
-						:label="api.checkRelicsList.attrMap.oldWarehouseId.value"
+						prop="oldWarehouseName"
+						:label="api.checkRelicsList.attrMap.oldWarehouseName.value"
 					/>
-					<!-- 盘点前货架id -->
+					<!-- 盘点前货架 -->
 					<el-table-column
-						prop="oldShelfId"
-						:label="api.checkRelicsList.attrMap.oldShelfId.value"
+						prop="oldShelfName"
+						:label="api.checkRelicsList.attrMap.oldShelfName.value"
 					/>
-					<!-- 盘点后仓库id -->
+					<!-- 盘点后仓库 -->
 					<el-table-column
-						prop="newWarehouseId"
-						:label="api.checkRelicsList.attrMap.newWarehouseId.value"
+						prop="newWarehouseName"
+						:label="api.checkRelicsList.attrMap.newWarehouseName.value"
 					/>
-					<!-- 盘点后货架id -->
+					<!-- 盘点后货架 -->
 					<el-table-column
-						prop="newShelfId"
-						:label="api.checkRelicsList.attrMap.newShelfId.value"
+						prop="newShelfName"
+						:label="api.checkRelicsList.attrMap.newShelfName.value"
 					/>
 					<!-- 盘点人姓名 -->
 					<el-table-column

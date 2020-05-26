@@ -347,10 +347,16 @@ export default {
 			warehouseId: {
 				value: '收储仓库ID',
 				type: 'remoteSelect',
-				owner: ['result', 'edit'],
+				owner: ['edit'],
 				permission: [9],
 				remoteSelectApi: warehousesIdList,
 				selectChild: 'shelfId'
+			},
+			warehouseName: {
+				value: '收储仓库',
+				type: 'String',
+				owner: ['result'],
+				permission: [9]
 			},
 			warehouse: {
 				value: '仓库ID',
@@ -369,10 +375,16 @@ export default {
 			shelfId: {
 				value: '收储货架ID',
 				type: 'remoteSelect',
-				owner: ['result', 'edit'],
+				owner: ['edit'],
 				permission: [9],
 				remoteSelectApi: shelvesIdList,
 				selectParent: 'warehouseId'
+			},
+			shelfName: {
+				value: '收储货架',
+				type: 'String',
+				owner: ['result'],
+				permission: [9]
 			},
 			enterPrice: {
 				value: '入馆价值 (人民币)',
@@ -658,7 +670,12 @@ export default {
 			warehouseId: {
 				value: '仓库ID',
 				type: 'Number',
-				owner: ['result', 'edit', 'form']
+				owner: ['edit', 'form']
+			},
+			warehouseName: {
+				value: '仓库',
+				type: 'String',
+				owner: ['result']
 			},
 			page: {
 				value: '页码',
@@ -727,7 +744,12 @@ export default {
 			warehouseId: {
 				value: '盘点仓库ID',
 				type: 'Number',
-				owner: ['result', 'form']
+				owner: ['form']
+			},
+			warehouseName: {
+				value: '盘点仓库名',
+				type: 'String',
+				owner: ['result']
 			},
 			checkCount: {
 				value: '盘点文物个数',
@@ -782,21 +804,41 @@ export default {
 			oldWarehouseId: {
 				value: '盘点前收储仓库ID',
 				type: 'Number',
+				owner: []
+			},
+			oldWarehouseName: {
+				value: '盘点前收储仓库',
+				type: 'String',
 				owner: ['result']
 			},
 			oldShelfId: {
 				value: '盘点前收储货架ID',
+				type: 'Number',
+				owner: []
+			},
+			oldShelfName: {
+				value: '盘点前收储货架',
 				type: 'Number',
 				owner: ['result']
 			},
 			newWarehouseId: {
 				value: '盘点后收储仓库ID',
 				type: 'Number',
+				owner: []
+			},
+			newWarehouseName: {
+				value: '盘点后收储仓库',
+				type: 'String',
 				owner: ['result']
 			},
 			newShelfId: {
 				value: '盘点后收储货架ID',
 				type: 'Number',
+				owner: []
+			},
+			newShelfName: {
+				value: '盘点后收储货架',
+				type: 'String',
 				owner: ['result']
 			},
 			operatorName: {
@@ -834,9 +876,10 @@ export default {
 		},
 		attrMap: {
 			warehouseId: {
-				value: '盘点仓库ID',
-				type: 'Number',
-				owner: ['form']
+				value: '盘点仓库',
+				type: 'remoteSelect',
+				owner: ['form'],
+				remoteSelectApi: warehousesIdList
 			}
 		}
 	},

@@ -7,7 +7,8 @@ export default {
 			inNeedApi: this.api.userList,
 			createApi: this.api.createUser,
 			deleteApi: this.api.deleteUser,
-			updateApi: this.api.updateUser
+			updateApi: this.api.updateUser,
+			excelApi: this.api.userExcel
 		}
 	}
 }

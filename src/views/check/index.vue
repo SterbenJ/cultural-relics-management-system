@@ -45,7 +45,7 @@
 				:visible.sync="showInfoDialog"
 				:close-on-click-modal="false"
 				:close-on-press-escape="false"
-				:show-close="false"
+				:show-close="true"
 				:destroy-on-close="false"
 				width="95%"
 				:center="true"
@@ -59,7 +59,7 @@
 							v-model="dialogFormModel.warehouseId"
 							placeholder="若无变更则留空"
 							@visible-change="getWarehouseList"
-							@change="dialogFormModel.shelfId = ''"
+							@change="handlerWarehouseIdChange"
 						>
 							<el-option
 								v-for="item in warehouseList"
@@ -93,6 +93,11 @@
 						@click="confirmCheckMsg"
 					>
 						确 定
+					</el-button>
+					<el-button
+						@click="showInfoDialog = false"
+					>
+						取 消
 					</el-button>
 				</div>
 			</el-dialog>
@@ -214,6 +219,11 @@ export default {
 			}).catch(err => {
 				console.log('get shelf list fail', err);
 			})
+		},
+		// 监听仓库id变化
+		handlerWarehouseIdChange() {
+			this.dialogFormModel.shelfId = ''
+			this.shelfList = []
 		}
 	}
 }

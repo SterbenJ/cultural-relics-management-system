@@ -8,6 +8,7 @@ export default {
 			createApi: this.api.createRelics,
 			deleteApi: this.api.deleteRelics,
 			updateApi: this.api.updateRelics,
+			excelApi: this.api.relicsExcel,
 			childRoute: {
 				name: 'relics',
 				query: {

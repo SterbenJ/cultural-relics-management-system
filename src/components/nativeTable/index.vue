@@ -16,6 +16,8 @@ export default {
 			updateApi: '',
 			deleteApi: '',
 			createApi: '',
+			excelApi: '',
+			excelIniting: false,
 			formModel: {
 				page: 1,
 				count: 10
@@ -58,6 +60,10 @@ export default {
 		// 是否可以删除
 		canDelete() {
 			return !!this.deleteApi
+		},
+		// 是否可以导出表格
+		canExportExcel() {
+			return !!this.excelApi
 		},
 		// 是否有操作格子
 		hasTableAction() {
@@ -536,6 +542,9 @@ export default {
 									console.log('fail upload')
 									Message.error(err)
 								}
+							},
+							style: {
+								'text-align': 'center'
 							}
 						},
 						[
@@ -811,6 +820,7 @@ export default {
 											change: function() {
 												if (vm.inNeedApi.attrMap[mprop].selectChild) {
 													vm.formModel[vm.inNeedApi.attrMap[mprop].selectChild] = ''
+													vm.remoteOptions[vm.inNeedApi.attrMap[mprop].selectChild + 'Options'] = []
 												}
 											}
 										}
@@ -859,6 +869,37 @@ export default {
 								click: function(event) {
 									vm.formModel.page = 1
 									vm.getData()
+								}
+							}
+						})
+					])
+				)
+			}
+			// 导出按钮
+			if (vm.canExportExcel) {
+				arr.push(
+					h('el-form-item', {}, [
+						h('el-button', {
+							domProps: {
+								innerHTML: '导出 Excel'
+							},
+							props: {
+								type: 'success',
+								loading: vm.excelIniting
+							},
+							on: {
+								click: function(event) {
+									Message.info('正在生成excel，根据数据量需等待 10 - 60 秒时间')
+									vm.excelIniting = true
+									vm.excelApi.func(vm.formModel).then(res => {
+										console.log('init excel success');
+										vm.excelIniting = false
+										// 下载表格
+										vm.api.utils.download(res.data.filePath)
+									}).catch(err => {
+										console.log('init excel fail', err);
+										vm.excelIniting = false
+									})
 								}
 							}
 						})

@@ -18,7 +18,12 @@
 						</el-select>
 					</el-form-item>
 					<el-form-item><el-button @click="search">检 索</el-button></el-form-item>
-					<el-form-item><el-button @click="keepCheck" type="warning">继续盘点</el-button></el-form-item>
+					<el-form-item>
+						<el-button @click="exportExcel" type="success" :loading="excelIniting">导出 Excel</el-button>
+					</el-form-item>
+					<el-form-item>
+						<el-button @click="keepCheck" type="warning">继续盘点</el-button>
+					</el-form-item>
 				</el-form>
 				<div id="tip-container">
 					<div class="tip-point success"></div>
@@ -104,6 +109,7 @@
 </template>
 
 <script>
+import { Message } from 'element-ui'
 export default {
 	data() {
 		return {
@@ -115,7 +121,8 @@ export default {
 			currentFormModel: {},
 			tableData: [],
 			totalPage: 0,
-			loading: true
+			loading: true,
+			excelIniting: false
 		}
 	},
 	watch: {
@@ -144,13 +151,17 @@ export default {
 			const vm = this
 			vm.loading = true
 			vm.api.checkRelicsList
-				.func(changePage ? {
-					id: vm.$attrs.id,
-					...vm.currentFormModel
-				} : {
-					id: vm.$attrs.id,
-					...vm.formModel
-				})
+				.func(
+					changePage
+						? {
+								id: vm.$attrs.id,
+								...vm.currentFormModel
+						  }
+						: {
+								id: vm.$attrs.id,
+								...vm.formModel
+						  }
+				)
 				.then(res => {
 					vm.tableData = res.data.data.content
 					vm.totalPage = res.data.data.totalPages
@@ -172,6 +183,20 @@ export default {
 			this.formModel.page = 1
 			this.getData()
 		},
+		// 导出为 excel 表格
+		exportExcel() {
+			Message.info('正在生成excel，根据数据量需等待 10 - 60 秒时间')
+			const vm = this
+			vm.excelIniting = true
+			vm.api.checkRelicsExcel.func({ id: vm.$attrs.id }).then(res => {
+				console.log('init excel success');
+				vm.excelIniting = false
+				vm.api.utils.download(res.data.filePath)
+			}).catch(err => {
+				console.log('init excel fail', err);
+				vm.excelIniting = false
+			})
+		},
 		// 根据环境切换请求图片地址
 		realPicturePath(path) {
 			if (!path) return ''
@@ -180,11 +205,15 @@ export default {
 		// 根据数据切换表格强调色
 		tableRowClassName({ row, rowIndex }) {
 			// if (row.checkTime) {
-				if (row.newWarehouseId === row.oldWarehouseId && row.newShelfId === row.oldShelfId && !!row.checkTime) {
-					return 'success-row'
-				} else {
-					return 'warning-row'
-				}
+			if (
+				row.newWarehouseId === row.oldWarehouseId &&
+				row.newShelfId === row.oldShelfId &&
+				!!row.checkTime
+			) {
+				return 'success-row'
+			} else {
+				return 'warning-row'
+			}
 			// } else {
 			// 	return ''
 			// }

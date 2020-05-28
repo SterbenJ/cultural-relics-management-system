@@ -41,7 +41,41 @@ function shelvesIdList(id) {
 	})
 }
 
+// 根据环境转换url
+function translateUrl(url) {
+	// Todo
+	return url
+}
+
+// 获取用户列表
+function getUserList(data) {
+	return axios({
+		url: '/users',
+		method: 'GET',
+		params: escapeAttr(data)
+	})
+}
+
 export default {
+
+	/**
+	 * 	工具方法
+	 */
+	utils: {
+		// 下载文件
+		download(url) {
+			return axios({
+				url: translateUrl(url),
+				method: 'GET'
+			})
+		},
+
+		// 根据环境转换 url
+		realUrl(url) {
+			return translateUrl(url)
+		}
+	},
+
 	// 登录
 	login: {
 		func(data) {
@@ -543,18 +577,34 @@ export default {
 		}
 	},
 
+	// 导出文物一览表
+	relicsExcel: {
+		func(data) {
+			const tmpData = { ...data }
+			tmpData.excel = true
+			return axios({
+				url: '/relics',
+				method: 'GET',
+				params: tmpData
+			})
+		},
+		attrMap: {
+			filePath: {
+				value: '文件路径',
+				type: 'String',
+				owner: ['']
+			}
+		}
+	},
+
 	/**
 	 *  用户管理
 	 */
 
-	// 获取用户信息
+	// 获取用户信息列表
 	userList: {
 		func(data) {
-			return axios({
-				url: '/users',
-				method: 'GET',
-				params: escapeAttr(data)
-			})
+			return getUserList(data)
 		},
 		attrMap: {
 			id: {
@@ -640,6 +690,26 @@ export default {
 				url: '/users/' + data.id,
 				method: 'DELETE'
 			})
+		}
+	},
+
+	// 导出用户表
+	userExcel: {
+		func(data) {
+			const tmpData = { ...data }
+			tmpData.excel = true
+			return axios({
+				url: '/users',
+				method: 'GET',
+				params: tmpData
+			})
+		},
+		attrMap: {
+			filePath: {
+				value: '文件路径',
+				type: 'String',
+				owner: ['']
+			}
 		}
 	},
 
@@ -865,6 +935,27 @@ export default {
 		}
 	},
 
+	// 导出某次盘点
+	checkRelicsExcel: {
+		func(data) {
+			const tmpData = { ...data }
+			delete data.id
+			tmpData.excel = true
+			return axios({
+				url: '/checks/' + tmpData.id + '/relics',
+				method: 'GET',
+				params: tmpData
+			})
+		},
+		attrMap: {
+			filePath: {
+				value: '文件路径',
+				type: 'String',
+				owner: ['']
+			}
+		}
+	},
+
 	// 开始一次盘点
 	createCheck: {
 		func(data) {
@@ -917,6 +1008,97 @@ export default {
 				value: '当前货架ID',
 				type: 'Number',
 				owner: ['edit']
+			}
+		}
+	},
+
+	/**
+	 *  操作记录
+	 */
+
+	// 获取操作记录
+	operationsList: {
+		func(data) {
+			return axios({
+				url: '/operations',
+				method: 'GET',
+				params: data
+			})
+		},
+		attrMap: {
+			id: {
+				value: '记录ID',
+				type: 'String',
+				owner: ['result']
+			},
+			operator: {
+				value: '操作人',
+				type: 'remoteSelect',
+				owner: ['result', 'form'],
+				remoteSelectApi: getUserList
+			},
+			itemName: {
+				value: '物品名称',
+				type: 'String',
+				owner: ['result']
+			},
+			itemType: {
+				value: '物品类型',
+				type: 'Select',
+				owner: ['result', 'form'],
+				selectMap: function() {
+					return {
+						relic: '文物',
+						warehouse: '仓库',
+						shelf: '货架',
+						user: '用户'
+					}
+				}
+			},
+			type: {
+				value: '操作类型',
+				type: 'String',
+				owner: ['result']
+			},
+			detail: {
+				value: '详细日志',
+				type: 'String',
+				owner: ['result']
+			},
+			createTime: {
+				value: '操作时间',
+				type: 'date',
+				owner: ['result']
+			},
+			from: {
+				value: '开始时间',
+				type: 'date',
+				owner: ['form']
+			},
+			to: {
+				value: '结束时间',
+				type: 'date',
+				owner: ['form']
+			}
+		}
+	},
+
+	// 导出操作记录表格
+	operationsExcel: {
+		func(data) {
+			const tmpData = { ...data }
+			tmpData.excel = true
+			return axios({
+				url: '/operations',
+				method: 'GET',
+				params: tmpData
+			})
+		},
+		attrMap: {
+			filePath: {
+				value: '文件路径',
+				type: 'String',
+				owner: ['']
 			}
 		}
 	}

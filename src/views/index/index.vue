@@ -54,7 +54,7 @@
 						</el-menu-item>
 					</el-submenu>
 					<!-- 操作管理 -->
-					<el-submenu v-if="hasPermission(13)" index="2">
+					<el-submenu v-if="hasPermission(1)" index="2">
 						<template slot="title">
 							<i class="el-icon-edit"></i>
 							<span slot="title">操作管理</span>

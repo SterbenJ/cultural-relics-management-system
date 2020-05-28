@@ -34,7 +34,7 @@ export default [{
 				name: 'culturalRelicsList',
 				component: () => import('../views/culturalRelicsList'),
 				meta: {
-					keepAlive: true
+					// keepAlive: true
 				}
 			},
 			{
@@ -65,7 +65,7 @@ export default [{
 				name: 'warehouseManagement',
 				component: () => import('../views/warehouseManagement'),
 				meta: {
-					keepAlive: true
+					// keepAlive: true
 				}
 			},
 			{

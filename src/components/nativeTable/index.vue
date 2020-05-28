@@ -458,24 +458,35 @@ export default {
 												if (event) {
 													vm.remoteOptionsState[mprop + 'Loading'] = true
 													// 有父select就根据父找当前选项
-													vm.inNeedApi.attrMap[mprop].remoteSelectApi(
-														vm.inNeedApi.attrMap[mprop].selectParent
-															? vm.dialogFormModel[
-																	vm.inNeedApi.attrMap[mprop]
-																		.selectParent
-															  ]
-															: undefined
-													).then(res => {
-														console.log('get ' + mprop + ' options success');
-														vm.remoteOptions[mprop + 'Options'] = res.data.data
-													}).catch(err => {
-														console.log('get ' + mprop + ' options fail', err);
-													})
+													vm.inNeedApi.attrMap[mprop]
+														.remoteSelectApi(
+															vm.inNeedApi.attrMap[mprop].selectParent
+																? vm.dialogFormModel[
+																		vm.inNeedApi.attrMap[mprop]
+																			.selectParent
+																  ]
+																: undefined
+														)
+														.then(res => {
+															console.log(
+																'get ' + mprop + ' options success'
+															)
+															vm.remoteOptions[mprop + 'Options'] =
+																res.data.data
+														})
+														.catch(err => {
+															console.log(
+																'get ' + mprop + ' options fail',
+																err
+															)
+														})
 												}
 											},
 											change: function() {
 												if (vm.inNeedApi.attrMap[mprop].selectChild) {
-													vm.dialogFormModel[vm.inNeedApi.attrMap[mprop].selectChild] = ''
+													vm.dialogFormModel[
+														vm.inNeedApi.attrMap[mprop].selectChild
+													] = ''
 												}
 											}
 										}
@@ -527,16 +538,17 @@ export default {
 								'list-type': 'picture-card',
 								limit: 1,
 								'on-success': function(res) {
-									console.log('success upload', res)
-									if (res.code !== 200) {
-										Message.error(res.msg)
-									} else {
+									console.log('success upload')
+									if (res.code === 200) {
+										Message.success('上传成功')
 										vm.getData()
+									} else {
+										Message.error(res.msg)
 									}
 									vm.dialogVisible = false
 								},
 								'on-error': function(err) {
-									console.log('fail upload')
+									console.log('fail upload', err)
 									Message.error(err)
 								}
 							},
@@ -799,25 +811,39 @@ export default {
 												if (event) {
 													vm.remoteOptionsState[mprop + 'Loading'] = true
 													// 有父select就根据父找当前选项
-													vm.inNeedApi.attrMap[mprop].remoteSelectApi(
-														vm.inNeedApi.attrMap[mprop].selectParent
-															? vm.formModel[
-																	vm.inNeedApi.attrMap[mprop]
-																		.selectParent
-															  ]
-															: undefined
-													).then(res => {
-														console.log('get ' + mprop + ' options success');
-														vm.remoteOptions[mprop + 'Options'] = res.data.data
-													}).catch(err => {
-														console.log('get ' + mprop + ' options fail', err);
-													})
+													vm.inNeedApi.attrMap[mprop]
+														.remoteSelectApi(
+															vm.inNeedApi.attrMap[mprop].selectParent
+																? vm.formModel[
+																		vm.inNeedApi.attrMap[mprop]
+																			.selectParent
+																  ]
+																: undefined
+														)
+														.then(res => {
+															console.log(
+																'get ' + mprop + ' options success'
+															)
+															vm.remoteOptions[mprop + 'Options'] =
+																res.data.data
+														})
+														.catch(err => {
+															console.log(
+																'get ' + mprop + ' options fail',
+																err
+															)
+														})
 												}
 											},
 											change: function() {
 												if (vm.inNeedApi.attrMap[mprop].selectChild) {
-													vm.formModel[vm.inNeedApi.attrMap[mprop].selectChild] = ''
-													vm.remoteOptions[vm.inNeedApi.attrMap[mprop].selectChild + 'Options'] = []
+													vm.formModel[
+														vm.inNeedApi.attrMap[mprop].selectChild
+													] = ''
+													vm.remoteOptions[
+														vm.inNeedApi.attrMap[mprop].selectChild +
+															'Options'
+													] = []
 												}
 											}
 										}
@@ -888,15 +914,18 @@ export default {
 								click: function(event) {
 									Message.info('正在生成excel，根据数据量需等待 10 - 60 秒时间')
 									vm.excelIniting = true
-									vm.excelApi.func(vm.formModel).then(res => {
-										console.log('init excel success');
-										vm.excelIniting = false
-										// 下载表格
-										vm.api.utils.download(res.data.filePath)
-									}).catch(err => {
-										console.log('init excel fail', err);
-										vm.excelIniting = false
-									})
+									vm.excelApi
+										.func(vm.formModel)
+										.then(res => {
+											console.log('init excel success')
+											vm.excelIniting = false
+											// 下载表格
+											vm.api.utils.download(res.data.data.filePath)
+										})
+										.catch(err => {
+											console.log('init excel fail', err)
+											vm.excelIniting = false
+										})
 								}
 							}
 						})
@@ -955,8 +984,9 @@ export default {
 												height: '100px'
 											},
 											props: {
-												src:
-													vm.api.utils.realUrlWithoutApi(scope.row[mprop]),
+												src: vm.api.utils.realUrlWithoutApi(
+													scope.row[mprop]
+												),
 												fit: 'contain'
 											}
 										})

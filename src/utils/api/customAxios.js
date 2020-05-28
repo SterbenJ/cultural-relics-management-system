@@ -45,16 +45,18 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
 	(response) => {
 		// endLoading()
-		if (response.data.code !== 200) {
-			Message.error(response.data.msg)
-			if (response.data.code === 403) {
-				// 清空用户信息，对应长时间挂机 session 过期的清空
-				store.commit('user/deleteUserData')
-				router.replace({
-					name: 'login'
-				})
+		if (response.data.code) {
+			if (response.data.code !== 200) {
+				Message.error(response.data.msg)
+				if (response.data.code === 403) {
+					// 清空用户信息，对应长时间挂机 session 过期的清空
+					store.commit('user/deleteUserData')
+					router.replace({
+						name: 'login'
+					})
+				}
+				return Promise.reject(response)
 			}
-			return Promise.reject(response)
 		}
 		return response
 	},

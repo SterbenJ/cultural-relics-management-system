@@ -191,7 +191,7 @@ export default {
 			vm.api.checkRelicsExcel.func({ id: vm.$attrs.id }).then(res => {
 				console.log('init excel success');
 				vm.excelIniting = false
-				vm.api.utils.download(res.data.filePath)
+				vm.api.utils.download(res.data.data.filePath)
 			}).catch(err => {
 				console.log('init excel fail', err);
 				vm.excelIniting = false

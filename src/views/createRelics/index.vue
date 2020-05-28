@@ -20,9 +20,12 @@ import {
 } from 'element-ui'
 export default {
 	methods: {
-		onSuccess() {
-			console.log('success upload')
-			Message.success('上传成功')
+		onSuccess(res) {
+			if (res.code === 200) {
+				Message.success('上传成功')
+			} else {
+				Message.error(res.msg)
+			}
 		},
 		onError(err) {
 			console.log('fail upload')

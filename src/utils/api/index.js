@@ -44,6 +44,7 @@ function shelvesIdList(id) {
 
 // 根据环境转换url
 function translateUrlWithoutApi(url) {
+	console.log('translateUrlWithoutApi', config.host + url);
 	return config.host + url
 }
 
@@ -69,9 +70,31 @@ export default {
 	utils: {
 		// 下载文件
 		download(url) {
-			return axios({
+			axios({
+				responseType: 'blob',
 				url: translateUrlWithoutApi(url),
-				method: 'GET'
+				method: 'GET',
+				baseURL: ''
+			}).then(res => {
+				if (res.status === 200) {
+					const url = window.URL.createObjectURL(
+						res.data
+					)
+					const link = document.createElement('a')
+					link.style.display = 'none'
+					link.href = url
+					console.log(
+						res.headers['content-disposition']
+					)
+					link.setAttribute(
+						'download',
+						decodeURI(res.headers[
+							'content-disposition'
+						].split(';')[1].split('=')[1])
+					) // 自定义下载文件名（如exemple.txt）
+					document.body.appendChild(link)
+					link.click()
+				}
 			})
 		},
 		// 根据环境转换 url (无api前缀)

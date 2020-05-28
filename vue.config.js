@@ -8,7 +8,7 @@ module.exports = {
 	devServer: {
 		proxy: {
 			'/api': {
-				target: 'http://relics.wegfan.cn',
+				target: 'http://relics-dev.wegfan.cn',
 				changeOrigin: true,
 				ws: true,
 				pathRewrite: {

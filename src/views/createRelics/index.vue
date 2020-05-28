@@ -1,7 +1,7 @@
 <template>
 	<div class="container-vertical-center container-horizontal-center">
 		<el-upload
-			:action="action"
+			:action="api.utils.realUrl('/relics')"
 			accept="image/*"
 			:multiple="false"
 			with-credentials
@@ -19,13 +19,6 @@ import {
 	Message
 } from 'element-ui'
 export default {
-	computed: {
-		action() {
-			return process.env.NODE_ENV === 'production'
-										? 'https://relics.wegfan.cn/api/v1/relics'
-										: '/api/v1/relics'
-		}
-	},
 	methods: {
 		onSuccess() {
 			console.log('success upload')

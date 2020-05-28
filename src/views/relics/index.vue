@@ -20,7 +20,7 @@
 							<el-image
 								v-show="!loading"
 								style="width: 100%; height: 100%;"
-								:src="realPicturePath"
+								:src="api.utils.realUrlWithoutApi(relicsData.picturePath)"
 								fit="contain"
 							/>
 						</transition>
@@ -54,14 +54,6 @@ export default {
 	},
 	components: {
 		vueQr
-	},
-	computed: {
-		realPicturePath() {
-			if (!this.relicsData.picturePath) return ''
-			return process.env.NODE_ENV === 'production'
-				? 'https://relics.wegfan.cn' + this.relicsData.picturePath
-				: this.relicsData.picturePath
-		}
 	},
 	data() {
 		return {

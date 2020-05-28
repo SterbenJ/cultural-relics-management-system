@@ -519,10 +519,7 @@ export default {
 						'el-upload',
 						{
 							props: {
-								action:
-									process.env.NODE_ENV === 'production'
-										? 'https://relics.wegfan.cn/api/v1/relics'
-										: '/api/v1/relics',
+								action: vm.api.utils.realUrl('/relics'),
 								accept: 'image/*',
 								multiple: false,
 								'with-credentials': true,
@@ -959,10 +956,7 @@ export default {
 											},
 											props: {
 												src:
-													process.env.NODE_ENV === 'production'
-														? 'https://relics.wegfan.cn' +
-														  scope.row[mprop]
-														: scope.row[mprop],
+													vm.api.utils.realUrlWithoutApi(scope.row[mprop]),
 												fit: 'contain'
 											}
 										})

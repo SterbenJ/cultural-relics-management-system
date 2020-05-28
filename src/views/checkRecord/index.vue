@@ -55,7 +55,7 @@
 							<el-image
 								style="width: 100px; height: 100px;"
 								fit="contain"
-								:src="realPicturePath(scope.row.picturePath)"
+								:src="api.utils.realUrlWithoutApi(scope.row.picturePath)"
 							/>
 						</template>
 					</el-table-column>
@@ -196,11 +196,6 @@ export default {
 				console.log('init excel fail', err);
 				vm.excelIniting = false
 			})
-		},
-		// 根据环境切换请求图片地址
-		realPicturePath(path) {
-			if (!path) return ''
-			return process.env.NODE_ENV === 'production' ? 'https://relics.wegfan.cn' + path : path
 		},
 		// 根据数据切换表格强调色
 		tableRowClassName({ row, rowIndex }) {

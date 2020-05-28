@@ -1,5 +1,6 @@
 import axios from './customAxios.js'
 import store from '../../store'
+import config from '../config'
 
 function escapeAttr(data) {
 	// const result = {}
@@ -42,9 +43,13 @@ function shelvesIdList(id) {
 }
 
 // 根据环境转换url
+function translateUrlWithoutApi(url) {
+	return config.host + url
+}
+
+// 根据环境转换url
 function translateUrl(url) {
-	// Todo
-	return url
+	return config.requestPrefix + url
 }
 
 // 获取用户列表
@@ -65,13 +70,22 @@ export default {
 		// 下载文件
 		download(url) {
 			return axios({
-				url: translateUrl(url),
+				url: translateUrlWithoutApi(url),
 				method: 'GET'
 			})
 		},
-
+		// 根据环境转换 url (无api前缀)
+		realUrlWithoutApi(url) {
+			if (!url) {
+				return ''
+			}
+			return translateUrlWithoutApi(url)
+		},
 		// 根据环境转换 url
 		realUrl(url) {
+			if (!url) {
+				return ''
+			}
 			return translateUrl(url)
 		}
 	},

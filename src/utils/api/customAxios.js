@@ -1,4 +1,5 @@
 import axios from 'axios'
+import config from '../config'
 import {
 	// Loading,
 	Message
@@ -7,11 +8,7 @@ import router from '../../router'
 import store from '../../store'
 
 // 根据环境切换 host
-if (process.env.NODE_ENV === 'development') {
-	axios.defaults.baseURL = '/api/v1'
-} else {
-	axios.defaults.baseURL = 'https://relics.wegfan.cn/api/v1'
-}
+axios.defaults.baseURL = config.requestPrefix
 
 axios.defaults.withCredentials = true
 

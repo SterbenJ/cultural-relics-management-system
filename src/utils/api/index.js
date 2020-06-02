@@ -1074,16 +1074,6 @@ export default {
 				owner: ['result', 'form'],
 				remoteSelectApi: getUserList
 			},
-			itemId: {
-				value: '操作对象ID',
-				type: 'String',
-				owner: ['result']
-			},
-			itemName: {
-				value: '物品名称',
-				type: 'String',
-				owner: ['result']
-			},
 			itemType: {
 				value: '操作对象类型',
 				type: 'Select',
@@ -1097,6 +1087,11 @@ export default {
 						check: '盘点'
 					}
 				}
+			},
+			itemId: {
+				value: '操作对象ID',
+				type: 'String',
+				owner: ['result']
 			},
 			type: {
 				value: '操作类型',

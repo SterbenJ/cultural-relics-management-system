@@ -2,7 +2,7 @@
 	<div class="container-vertical-center container-horizontal-center">
 		<el-form ref="formRef" :model="formModel" :rules="formRules">
 			<el-form-item prop="warehouseId" :label="api.createCheck.attrMap.warehouseId.value">
-				<el-select v-model="formModel.warehouseId" @visible-change="handlerVisibleChange">
+				<el-select :loading="optionLoading" v-model="formModel.warehouseId" @visible-change="handlerVisibleChange">
 					<el-option
 						v-for="value in warehouseIdList"
 						:key="value.id"
@@ -37,6 +37,7 @@ export default {
 					}
 				]
 			},
+			optionLoading: false,
 			validateState: true
 		}
 	},
@@ -70,14 +71,17 @@ export default {
 			// 打开的时候加载远程选项
 			const vm = this
 			if (event) {
+				vm.optionLoading = true
 				vm.api.createCheck.attrMap.warehouseId
 					.remoteSelectApi()
 					.then(res => {
 						console.log('get options success')
 						vm.warehouseIdList = res.data.data
+						vm.optionLoading = false
 					})
 					.catch(err => {
 						console.log('get options fail', err)
+						vm.optionLoading = false
 					})
 			}
 		}

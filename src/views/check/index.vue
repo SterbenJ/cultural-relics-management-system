@@ -55,6 +55,7 @@
 				<el-form ref="dialogFormRef" :model="dialogFormModel">
 					<el-form-item prop="warehouseId" :label="api.check.attrMap.warehouseId.value">
 						<el-select
+							:loading="warehouseOptionLoading"
 							clearable
 							v-model="dialogFormModel.warehouseId"
 							placeholder="若无变更则留空"
@@ -71,6 +72,7 @@
 					</el-form-item>
 					<el-form-item prop="shelfId" :label="api.check.attrMap.shelfId.value">
 						<el-select
+							:loading="shelfOptionLoading"
 							clearable
 							v-model="dialogFormModel.shelfId"
 							placeholder="若无变更则留空"
@@ -145,7 +147,9 @@ export default {
 		// 仓库列表
 		warehouseList: [],
 		// 货架列表
-		shelfList: []
+		shelfList: [],
+		warehouseOptionLoading: false,
+		shelfOptionLoading: false
 	}),
 	methods: {
 		// 监听扫码暂停开始
@@ -205,19 +209,25 @@ export default {
 		// 获得仓库列表
 		getWarehouseList() {
 			const vm = this
+			vm.warehouseOptionLoading = true
 			this.api.relicsList.attrMap.warehouseId.remoteSelectApi().then(res => {
 				vm.warehouseList = res.data.data
+				vm.warehouseOptionLoading = false
 			}).catch(err => {
 				console.log('get warehouse list fail', err);
+				vm.warehouseOptionLoading = false
 			})
 		},
 		// 获得货架列表
 		getShelfList() {
 			const vm = this
+			vm.shelfOptionLoading = true
 			this.api.relicsList.attrMap.shelfId.remoteSelectApi(this.dialogFormModel.warehouseId).then(res => {
 				vm.shelfList = res.data.data
+				vm.shelfOptionLoading = false
 			}).catch(err => {
 				console.log('get shelf list fail', err);
+				vm.shelfOptionLoading = false
 			})
 		},
 		// 监听仓库id变化

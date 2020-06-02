@@ -1068,11 +1068,16 @@ export default {
 				type: 'String',
 				owner: ['result']
 			},
-			operator: {
+			operatorName: {
 				value: '操作人',
 				type: 'remoteSelect',
 				owner: ['result', 'form'],
 				remoteSelectApi: getUserList
+			},
+			itemId: {
+				value: '操作对象ID',
+				type: 'String',
+				owner: ['result']
 			},
 			itemName: {
 				value: '物品名称',
@@ -1080,7 +1085,7 @@ export default {
 				owner: ['result']
 			},
 			itemType: {
-				value: '物品类型',
+				value: '操作对象类型',
 				type: 'Select',
 				owner: ['result', 'form'],
 				selectMap: function() {
@@ -1088,7 +1093,8 @@ export default {
 						relic: '文物',
 						warehouse: '仓库',
 						shelf: '货架',
-						user: '用户'
+						user: '用户',
+						check: '盘点'
 					}
 				}
 			},

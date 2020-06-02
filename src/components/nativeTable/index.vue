@@ -121,6 +121,11 @@ export default {
 					console.log('get data success')
 					loading.close()
 					this.loading = false
+					if (response.data.data.totalPages < response.data.data.currentPage) {
+						vm.currentFormModel.page = response.data.data.totalPages
+						vm.formModel.page = response.data.data.totalPages
+						vm.getData(true)
+					}
 				})
 				.catch(error => {
 					console.log('get data fail', error)
@@ -219,7 +224,7 @@ export default {
 					console.log('create success')
 					loading.close()
 					vm.handleDialogClose()
-					vm.getData()
+					vm.getData(true)
 				})
 				.catch(error => {
 					loading.close()
@@ -241,7 +246,7 @@ export default {
 					console.log('update success')
 					loading.close()
 					vm.handleDialogClose()
-					vm.getData()
+					vm.getData(true)
 				})
 				.catch(error => {
 					loading.close()
@@ -264,7 +269,7 @@ export default {
 				.then(response => {
 					console.log('delete success')
 					loading.close()
-					vm.getData()
+					vm.getData(true)
 				})
 				.catch(error => {
 					loading.close()
@@ -429,8 +434,7 @@ export default {
 							{
 								props: {
 									label: vm.inNeedApi.attrMap[mprop].value,
-									prop: mprop,
-									loading: vm.remoteOptionsState[mprop + 'Loading']
+									prop: mprop
 								},
 								style: vm.checkRelics(),
 								ref: mprop
@@ -441,6 +445,7 @@ export default {
 									{
 										props: {
 											value: vm.dialogFormModel[mprop],
+											loading: vm.remoteOptionsState[mprop + 'Loading'],
 											clearable: true
 											// disabled: vm.inNeedApi.attrMap[mprop].selectParent
 											// 	? !vm.dialogFormModel[
@@ -473,12 +478,14 @@ export default {
 															)
 															vm.remoteOptions[mprop + 'Options'] =
 																res.data.data
+															vm.remoteOptionsState[mprop + 'Loading'] = false
 														})
 														.catch(err => {
 															console.log(
 																'get ' + mprop + ' options fail',
 																err
 															)
+															vm.remoteOptionsState[mprop + 'Loading'] = false
 														})
 												}
 											},
@@ -783,8 +790,7 @@ export default {
 							{
 								props: {
 									label: vm.inNeedApi.attrMap[mprop].value,
-									prop: mprop,
-									loading: vm.remoteOptionsState[mprop + 'Loading']
+									prop: mprop
 								},
 								ref: mprop
 							},
@@ -794,7 +800,8 @@ export default {
 									{
 										props: {
 											value: vm.formModel[mprop],
-											clearable: true
+											clearable: true,
+											loading: vm.remoteOptionsState[mprop + 'Loading']
 											// disabled: vm.inNeedApi.attrMap[mprop].selectParent
 											// 	? !vm.formModel[
 											// 			vm.inNeedApi.attrMap[mprop].selectParent
@@ -826,12 +833,14 @@ export default {
 															)
 															vm.remoteOptions[mprop + 'Options'] =
 																res.data.data
+															vm.remoteOptionsState[mprop + 'Loading'] = false
 														})
 														.catch(err => {
 															console.log(
 																'get ' + mprop + ' options fail',
 																err
 															)
+															vm.remoteOptionsState[mprop + 'Loading'] = false
 														})
 												}
 											},

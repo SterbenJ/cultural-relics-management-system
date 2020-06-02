@@ -51,7 +51,7 @@
 				:center="true"
 				@closed="handlerDialogClose"
 			>
-				<relics ref="relics" :simple="true" :id="dialogFormModel.relicsId" />
+				<relics ref="relics" :simple="true" :id="dialogFormModel.id" />
 				<div slot="footer" class="dialog-footer">
 					<el-button @click="showInfoDialog = false">取 消</el-button>
 					<el-button type="primary" @click="openEditDialog">编 辑</el-button>
@@ -80,12 +80,28 @@
 						<el-select
 							v-if="api.relicsList.attrMap[value].type === 'Select'"
 							v-model="dialogFormModel[value]"
+							clearable
 						>
 							<el-option
 								v-for="(value, key) in api.relicsList.attrMap[value].selectMap()"
 								:key="isNaN(Number(key)) ? key : Number(key)"
 								:value="isNaN(Number(key)) ? key : Number(key)"
 								:label="value"
+							></el-option>
+						</el-select>
+						<el-select
+							:loading="remoteOptionsState[value + 'Loading']"
+							v-else-if="api.relicsList.attrMap[value].type === 'remoteSelect'"
+							v-model="dialogFormModel[value]"
+							@visible-change="getOptions(arguments, value)"
+							@change="handlerOptionChange(value)"
+							clearable
+						>
+							<el-option
+								v-for="(value) in remoteOptions[value + 'Options']"
+								:key="isNaN(Number(value.id)) ? value.id : Number(value.id)"
+								:value="isNaN(Number(value.id)) ? value.id : Number(value.id)"
+								:label="value.name"
 							></el-option>
 						</el-select>
 						<el-input v-else v-model="dialogFormModel[value]"></el-input>
@@ -134,7 +150,11 @@ export default {
 		dialogFormModel: {},
 		// 表单中可以编辑的内容
 		dialogModelList: [],
-		dialogLoading: false
+		dialogLoading: false,
+		// 远程加载的 option
+		remoteOptions: {},
+		// 远程加载的状态
+		remoteOptionsState: {}
 	}),
 	methods: {
 		// 初始化 dialog 属性列表
@@ -155,6 +175,18 @@ export default {
 								.permission) {
 								if (this.hasPermission(tmpPermission)) {
 									iList.push(currentValue)
+									// 初始化远程加载selectOption
+									if (
+										this.api.relicsList.attrMap[currentValue].type ===
+										'remoteSelect'
+									) {
+										this.$set(this.remoteOptions, currentValue + 'Options', [])
+										this.$set(
+											this.remoteOptionsState,
+											currentValue + 'Loading',
+											false
+										)
+									}
 									break
 								}
 							}
@@ -171,7 +203,7 @@ export default {
 		handlerDialogClose() {},
 		// 打开编辑dialog
 		openEditDialog() {
-			for (const key in this.dialogFormModel) {
+			for (const key of this.dialogModelList) {
 				this.dialogFormModel[key] = this.$refs.relics.relicsData[key]
 			}
 			this.showEditDialog = true
@@ -185,11 +217,50 @@ export default {
 		},
 		// 扫描到二维码后的处理
 		afterGetCode(targetId) {
-			this.dialogFormModel.relicsId = targetId
+			this.dialogFormModel.id = targetId
 			this.showInfoDialog = true
 		},
 		openScan() {
 			this.$refs.scan.openScan()
+		},
+		// 监听 select 改变
+		handlerOptionChange(mprop) {
+			const vm = this
+			if (vm.api.relicsList.attrMap[mprop].selectChild) {
+				vm.dialogFormModel[
+					vm.api.relicsList.attrMap[mprop].selectChild
+				] = ''
+				vm.remoteOptions[
+					vm.api.relicsList.attrMap[mprop].selectChild +
+						'Options'
+				] = []
+			}
+		},
+		// 获得 options
+		getOptions(event, mprop) {
+			const vm = this
+			console.log(event);
+			console.log(mprop);
+			// 打开的时候加载远程选项
+			if (event[0]) {
+				vm.remoteOptionsState[mprop + 'Loading'] = true
+				// 有父select就根据父找当前选项
+				vm.api.relicsList.attrMap[mprop]
+					.remoteSelectApi(
+						vm.api.relicsList.attrMap[mprop].selectParent
+							? vm.dialogFormModel[vm.api.relicsList.attrMap[mprop].selectParent]
+							: undefined
+					)
+					.then(res => {
+						console.log('get ' + mprop + ' options success')
+						vm.remoteOptions[mprop + 'Options'] = res.data.data
+						vm.remoteOptionsState[mprop + 'Loading'] = false
+					})
+					.catch(err => {
+						console.log('get ' + mprop + ' options fail', err)
+						vm.remoteOptionsState[mprop + 'Loading'] = false
+					})
+			}
 		},
 		// 更新文物信息
 		updateRelics() {

@@ -52,7 +52,7 @@
 				@closed="handlerDialogClose"
 			>
 				<relics :simple="true" :id="dialogFormModel.relicsId" />
-				<el-form ref="dialogFormRef" :model="dialogFormModel">
+				<el-form label-position="top" ref="dialogFormRef" :model="dialogFormModel">
 					<el-form-item prop="warehouseId" :label="api.check.attrMap.warehouseId.value">
 						<el-select
 							:loading="warehouseOptionLoading"

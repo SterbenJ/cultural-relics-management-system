@@ -2,7 +2,7 @@
 	<div>
 		<transition name="el-zoom-in-top">
 			<el-row id="check-record-container" v-show="!loading">
-				<el-form :model="formModel" inline>
+				<el-form label-position="left" :model="formModel" inline>
 					<el-form-item prop="checked" label="状态">
 						<el-select v-model="formModel.checked" clearable>
 							<el-option

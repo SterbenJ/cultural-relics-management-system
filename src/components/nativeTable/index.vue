@@ -1065,7 +1065,7 @@ export default {
 					h('el-table-column', {
 						props: {
 							label: '操作',
-							width: '100',
+							width: '111',
 							fixed: 'right'
 						},
 						scopedSlots: {
@@ -1076,10 +1076,12 @@ export default {
 										'el-button',
 										{
 											props: {
-												type: 'text',
-												size: 'small'
+												type: 'primary',
+												plain: true,
+												size: 'mini'
 											},
 											style: {
+												padding: '7px 8px',
 												display: vm.canUpdate ? '' : 'none'
 											},
 											on: {
@@ -1121,8 +1123,11 @@ export default {
 												'el-button',
 												{
 													props: {
-														type: 'text',
-														size: 'small'
+														type: 'danger',
+														size: 'mini'
+													},
+													style: {
+														padding: '7px 8px'
 													},
 													on: {
 														click: function(e) {
@@ -1194,7 +1199,8 @@ export default {
 							{
 								props: {
 									model: vm.formModel,
-									inline: true
+									inline: true,
+									'label-position': 'left'
 								},
 								on: {
 									input: function() {

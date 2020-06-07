@@ -1,6 +1,6 @@
 <template>
 	<div class="main-container">
-		<el-form ref="formRef" :rules="formRules" style="width: 350px;" :model="formModel">
+		<el-form label-position="left" ref="formRef" :rules="formRules" style="width: 350px;" :model="formModel">
 			<el-form-item>
 				<div class="font-title-extra-large login-card-title">故宫文物管理系统</div>
 			</el-form-item>

@@ -1,6 +1,6 @@
 <template>
 	<div class="container-vertical-center container-horizontal-center">
-		<el-form ref="formRef" :model="formModel" :rules="formRules">
+		<el-form label-position="left" ref="formRef" :model="formModel" :rules="formRules">
 			<el-form-item prop="warehouseId" :label="api.createCheck.attrMap.warehouseId.value">
 				<el-select :loading="optionLoading" v-model="formModel.warehouseId" @visible-change="handlerVisibleChange">
 					<el-option

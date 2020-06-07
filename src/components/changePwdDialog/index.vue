@@ -6,7 +6,7 @@
 		:visible.sync="changePwdDialogVisible"
 		width="40%"
 	>
-		<el-form ref="formRef" :model="formModel" :rules="formRules">
+		<el-form label-position="left" ref="formRef" :model="formModel" :rules="formRules">
 			<el-form-item prop="oldPassword">
 				<el-input v-model="formModel.oldPassword" type="password" show-password placeholder="旧密码"></el-input>
 			</el-form-item>

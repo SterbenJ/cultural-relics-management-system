@@ -776,8 +776,9 @@ export default {
 			},
 			warehouseId: {
 				value: '仓库ID',
-				type: 'Number',
-				owner: ['edit', 'form']
+				type: 'remoteSelect',
+				owner: ['edit', 'form'],
+				remoteSelectApi: warehousesIdList
 			},
 			warehouseName: {
 				value: '仓库',

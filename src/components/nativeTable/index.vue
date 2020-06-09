@@ -124,7 +124,9 @@ export default {
 					if (response.data.data.totalPages < response.data.data.currentPage) {
 						vm.currentFormModel.page = response.data.data.totalPages
 						vm.formModel.page = response.data.data.totalPages
-						vm.getData(true)
+						if (response.data.data.totalPages !== 0) {
+							vm.getData(true)
+						}
 					}
 				})
 				.catch(error => {

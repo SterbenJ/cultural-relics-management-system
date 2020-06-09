@@ -117,13 +117,15 @@ export default {
 					/* eslint- */
 				})
 				.then(res => {
+					console.log('get relics success');
 					vm.relicsData = res.data.data
 					vm.translateToTable(vm.relicsData)
 					vm.loading = false
-					console.log('get relics success');
+					
 				})
 				.catch(err => {
 					console.log('get relics fail', err)
+					vm.$emit('hasNotData')
 					vm.loading = false
 				})
 		},

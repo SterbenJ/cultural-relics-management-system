@@ -18,7 +18,10 @@ export default [{
 	{
 		path: '/scan-editInfo',
 		name: 'scanEditInfo',
-		component: () => import('../views/scanEditInfo')
+		component: () => import('../views/scanEditInfo'),
+		props: (route) => {
+			return { ...route.query }
+		}
 	},
 	{
 		path: '/index',
@@ -72,6 +75,11 @@ export default [{
 				path: 'init-check',
 				name: 'initCheck',
 				component: () => import('../views/initCheck')
+			},
+			{
+				path: 'init-batch-edit',
+				name: 'initBatchEdit',
+				component: () => import('../views/initBatchEdit')
 			},
 			{
 				path: 'shelves-management',

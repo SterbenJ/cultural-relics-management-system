@@ -101,6 +101,15 @@
 						<span slot="title">盘点文物</span>
 					</el-menu-item>
 					<el-menu-item
+						v-if="hasPermission(8)"
+						index="initBatchEdit"
+						:route="{ name: 'initBatchEdit' }"
+					>
+						<i class="el-icon-s-order"></i>
+						<span slot="title">批量扫码修改</span>
+					</el-menu-item>
+					<el-menu-item
+						style="margin-bottom: 56px;"
 						v-if="hasPermission(5) || hasPermission(7) || hasPermission(4)"
 						index="scanEditInfo"
 						:route="{ name: 'scanEditInfo' }"
@@ -112,7 +121,6 @@
 						<span slot="title">测试</span>
 					</el-menu-item> -->
 					<el-menu-item
-						index="4"
 						v-show="!collapsed"
 						@click="toAuthor"
 						class="author-item"
@@ -122,10 +130,10 @@
 				</el-menu>
 			</el-aside>
 			<el-container>
-				<el-header class="custom-el-header">
+				<el-header class="custom-el-header" style="height: 61px;">
 					<el-menu mode="horizontal">
 						<el-menu-item @click="collapse"><i :class="collapseIcon"></i></el-menu-item>
-						<el-menu-item style="float: right; height: 61px;" v-popover:user-popover>
+						<el-menu-item style="float: right; height: 60px;" v-popover:user-popover>
 							<i class="el-icon-user"></i>
 							<span slot="title">{{ userName }}</span>
 						</el-menu-item>
@@ -252,9 +260,8 @@ body, .el-scrollbar__wrap
 	margin-bottom 10px
 // 作者信息
 .author-item
-	position absolute
+	position fixed
 	text-align center
-	width 200px
 	bottom 0px
-	width 100%
+	width 200px
 </style>

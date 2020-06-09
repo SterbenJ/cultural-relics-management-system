@@ -51,7 +51,7 @@
 				:center="true"
 				@closed="handlerDialogClose"
 			>
-				<relics ref="relics" :simple="true" :id="dialogFormModel.id" />
+				<relics ref="relics" :simple="true" :id="dialogFormModel.id" @hasNotData="handlerHasNotData" />
 				<div slot="footer" class="dialog-footer">
 					<el-button @click="showInfoDialog = false">取 消</el-button>
 					<el-button type="primary" @click="openEditDialog">编 辑</el-button>
@@ -218,6 +218,11 @@ export default {
 		// 扫描到二维码后的处理
 		afterGetCode(targetId) {
 			this.dialogFormModel.id = targetId
+			if (this.$attrs) {
+				this.dialogFormModel[this.$attrs.attr] = this.$attrs.value
+				this.updateRelics()
+				return
+			}
 			this.showInfoDialog = true
 		},
 		openScan() {
@@ -276,6 +281,10 @@ export default {
 				.catch(err => {
 					console.log('updateRelics fail', err)
 				})
+		},
+		// 查无该文物时
+		handlerHasNotData() {
+			this.showInfoDialog = false
 		}
 	},
 	mounted() {

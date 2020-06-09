@@ -1,10 +1,23 @@
 <template>
 	<div class="container-vertical-center container-horizontal-center">
 		<el-form label-position="left" ref="formRef" :model="formModel" :rules="formRules">
-			<el-form-item prop="warehouseId" :label="api.createCheck.attrMap.warehouseId.value">
+			<el-form-item prop="attr" label="修改字段">
+				<el-select
+					@change="formModel.value = undefined"
+					v-model="formModel.attr"
+				>
+					<el-option
+						v-for="value in attrList"
+						:key="value.value"
+						:value="value.value"
+						:label="value.label"
+					></el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item v-if="formModel.attr === 'warehouseId'" prop="value" label="内容">
 				<el-select
 					:loading="optionLoading"
-					v-model="formModel.warehouseId"
+					v-model="formModel.value"
 					@visible-change="handlerVisibleChange"
 				>
 					<el-option
@@ -15,7 +28,19 @@
 					></el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item>
+			<el-form-item v-else-if="formModel.attr === 'statusId'" prop="value" label="内容">
+				<el-select
+					v-model="formModel.value"
+				>
+					<el-option
+						v-for="(value, key) in api.relicsList.attrMap.statusId.selectMap()"
+						:key="key"
+						:value="key"
+						:label="value"
+					></el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item v-if="formModel.attr === 'warehouseId'">
 				<el-button
 					style="width: 100%;"
 					type="primary"
@@ -26,8 +51,8 @@
 				</el-button>
 			</el-form-item>
 			<el-form-item>
-				<el-button style="width: 100%;" type="primary" @click="startCheck">
-					开始盘点
+				<el-button style="width: 100%;" type="primary" @click="startBatchEdit">
+					开始扫码修改
 				</el-button>
 			</el-form-item>
 		</el-form>
@@ -56,14 +81,32 @@ export default {
 	data() {
 		return {
 			formModel: {
-				warehouseId: ''
+				attr: undefined,
+				value: undefined
 			},
 			warehouseIdList: [],
+			attrList: [
+				{
+					label: '仓库',
+					value: 'warehouseId'
+				},
+				{
+					label: '文物状态',
+					value: 'statusId'
+				}
+			],
 			formRules: {
-				warehouseId: [
+				attr: [
 					{
 						required: true,
-						message: '请选择仓库',
+						message: '请选择修改字段',
+						trigger: 'blur'
+					}
+				],
+				value: [
+					{
+						required: true,
+						message: '请选择修改内容',
 						trigger: 'blur'
 					}
 				]
@@ -87,22 +130,13 @@ export default {
 		}
 	},
 	methods: {
-		// 开始盘点
-		async startCheck() {
+		// 开始批量修改
+		async startBatchEdit() {
 			await this.touchValidate()
 			if (!this.validateState) {
 				return
 			}
-			const vm = this
-			this.api.createCheck
-				.func(this.formModel)
-				.then(res => {
-					console.log('start check')
-					vm.$router.push('/check/' + res.data.data.id)
-				})
-				.catch(err => {
-					console.log('start check fail', err)
-				})
+			this.$router.push({ name: 'scanEditInfo', query: this.formModel })
 		},
 		// 触发表单校验
 		touchValidate() {

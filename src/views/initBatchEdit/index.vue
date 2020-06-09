@@ -1,24 +1,13 @@
 <template>
 	<div class="container-vertical-center container-horizontal-center">
 		<el-form label-position="left" ref="formRef" :model="formModel" :rules="formRules">
-			<el-form-item prop="attr" label="修改字段">
+			<el-form-item prop="warehouseId" label="仓库">
 				<el-select
-					@change="formModel.value = undefined"
-					v-model="formModel.attr"
-				>
-					<el-option
-						v-for="value in attrList"
-						:key="value.value"
-						:value="value.value"
-						:label="value.label"
-					></el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item v-if="formModel.attr === 'warehouseId'" prop="value" label="内容">
-				<el-select
-					:loading="optionLoading"
-					v-model="formModel.value"
-					@visible-change="handlerVisibleChange"
+					clearable
+					:loading="optionWarehouseIdLoading"
+					v-model="formModel.warehouseId"
+					@visible-change="handlerWarehouseIdVisibleChange"
+					@change="formModel.shelfId = undefined"
 				>
 					<el-option
 						v-for="value in warehouseIdList"
@@ -28,10 +17,23 @@
 					></el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item v-else-if="formModel.attr === 'statusId'" prop="value" label="内容">
+			<el-form-item prop="shelfId" label="货架">
 				<el-select
-					v-model="formModel.value"
+					clearable
+					:loading="optionShelfIdLoading"
+					v-model="formModel.shelfId"
+					@visible-change="handlerShlefIdVisibleChange"
 				>
+					<el-option
+						v-for="value in shelfIdList"
+						:key="value.id"
+						:value="value.id"
+						:label="value.name"
+					></el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item prop="statusId" label="文物状态">
+				<el-select clearable v-model="formModel.statusId">
 					<el-option
 						v-for="(value, key) in api.relicsList.attrMap.statusId.selectMap()"
 						:key="key"
@@ -40,7 +42,7 @@
 					></el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item v-if="formModel.attr === 'warehouseId'">
+			<!-- <el-form-item>
 				<el-button
 					style="width: 100%;"
 					type="primary"
@@ -49,14 +51,18 @@
 				>
 					新建仓库
 				</el-button>
-			</el-form-item>
+			</el-form-item> -->
 			<el-form-item>
-				<el-button style="width: 100%;" type="primary" @click="startBatchEdit">
+				<el-button :disabled="!submitAble" style="width: 100%;" type="primary" @click="startBatchEdit">
 					开始扫码修改
 				</el-button>
 			</el-form-item>
 		</el-form>
-		<el-dialog @closed="handlerClosedDialog" title="新建仓库" :visible.sync="showCreateWarehouseDialog">
+		<el-dialog
+			@closed="handlerClosedDialog"
+			title="新建仓库"
+			:visible.sync="showCreateWarehouseDialog"
+		>
 			<el-form
 				label-position="top"
 				ref="dialogFormRef"
@@ -81,10 +87,11 @@ export default {
 	data() {
 		return {
 			formModel: {
-				attr: undefined,
+				shelfId: undefined,
 				value: undefined
 			},
 			warehouseIdList: [],
+			shelfIdList: [],
 			attrList: [
 				{
 					label: '仓库',
@@ -111,7 +118,8 @@ export default {
 					}
 				]
 			},
-			optionLoading: false,
+			optionWarehouseIdLoading: false,
+			optionShelfIdLoading: false,
 			validateState: true,
 			showCreateWarehouseDialog: false,
 			dialogFormModel: {
@@ -129,13 +137,22 @@ export default {
 			dialogValidateState: true
 		}
 	},
+	computed: {
+		submitAble() {
+			return (
+				(this.formModel.warehouseId || this.formModel.shelfId || this.formModel.statusId) &&
+				(this.formModel.warehouseId ? !!this.formModel.shelfId : true) &&
+				(this.formModel.shelfId ? !!this.formModel.warehouseId : true)
+			)
+		}
+	},
 	methods: {
 		// 开始批量修改
 		async startBatchEdit() {
-			await this.touchValidate()
-			if (!this.validateState) {
-				return
-			}
+			// await this.touchValidate()
+			// if (!this.validateState) {
+			// 	return
+			// }
 			this.$router.push({ name: 'scanEditInfo', query: this.formModel })
 		},
 		// 触发表单校验
@@ -171,22 +188,41 @@ export default {
 				vm.dialogValidateState = result
 			})
 		},
-		// 监听select开关
-		handlerVisibleChange(event) {
+		// 监听仓库ID select 开关
+		handlerWarehouseIdVisibleChange(event) {
 			// 打开的时候加载远程选项
 			const vm = this
 			if (event) {
-				vm.optionLoading = true
+				vm.optionWarehouseIdLoading = true
 				vm.api.createCheck.attrMap.warehouseId
 					.remoteSelectApi()
 					.then(res => {
-						console.log('get options success')
+						console.log('get warehouse options success')
 						vm.warehouseIdList = res.data.data
-						vm.optionLoading = false
+						vm.optionWarehouseIdLoading = false
 					})
 					.catch(err => {
-						console.log('get options fail', err)
-						vm.optionLoading = false
+						console.log('get warehouse options fail', err)
+						vm.optionWarehouseIdLoading = false
+					})
+			}
+		},
+		// 监听货架ID select 开关
+		handlerShlefIdVisibleChange(event) {
+			// 打开的时候加载远程选项
+			const vm = this
+			if (event) {
+				vm.optionShelfIdLoading = true
+				vm.api.createCheck.attrMap.shelfId
+					.remoteSelectApi(vm.formModel.warehouseId)
+					.then(res => {
+						console.log('get shelf options success')
+						vm.shelfIdList = res.data.data
+						vm.optionShelfIdLoading = false
+					})
+					.catch(err => {
+						console.log('get shelf options fail', err)
+						vm.optionShelfIdLoading = false
 					})
 			}
 		},

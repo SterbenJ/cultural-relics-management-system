@@ -32,7 +32,7 @@ function warehousesIdList() {
 }
 
 // 获得货架ID列表
-function shelvesIdList(id) {
+function shelfIdList(id) {
 	return axios({
 		url: '/shelves',
 		method: 'GET',
@@ -440,7 +440,7 @@ export default {
 				value: '货架ID',
 				type: 'remoteSelect',
 				owner: ['form'],
-				remoteSelectApi: shelvesIdList,
+				remoteSelectApi: shelfIdList,
 				selectParent: 'warehouse'
 			},
 			shelfId: {
@@ -448,7 +448,7 @@ export default {
 				type: 'remoteSelect',
 				owner: ['edit'],
 				permission: [9],
-				remoteSelectApi: shelvesIdList,
+				remoteSelectApi: shelfIdList,
 				selectParent: 'warehouseId'
 			},
 			shelfName: {
@@ -1009,6 +1009,12 @@ export default {
 				type: 'remoteSelect',
 				owner: ['form'],
 				remoteSelectApi: warehousesIdList
+			},
+			shelfId: {
+				value: '货架',
+				type: 'remoteSelect',
+				owner: ['form'],
+				remoteSelectApi: shelfIdList
 			}
 		}
 	},

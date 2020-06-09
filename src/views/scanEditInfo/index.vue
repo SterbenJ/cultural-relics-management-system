@@ -218,8 +218,9 @@ export default {
 		// 扫描到二维码后的处理
 		afterGetCode(targetId) {
 			this.dialogFormModel.id = targetId
-			if (this.$attrs) {
-				this.dialogFormModel[this.$attrs.attr] = this.$attrs.value
+			// 若有参数就批量修改
+			if (Object.keys(this.$attrs).length > 0) {
+				this.dialogFormModel = { ...this.dialogFormModel, ...this.$attrs }
 				this.updateRelics()
 				return
 			}

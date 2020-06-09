@@ -2,6 +2,7 @@
 	<div style="height: 100%;">
 		<el-container class="custom-el-container">
 			<el-aside class="custom-el-aside" style="width: 0 auto;">
+				<el-scrollbar style="height:100%">
 				<el-menu
 					:collapse="collapsed"
 					class="custom-el-menu"
@@ -109,7 +110,7 @@
 						<span slot="title">批量扫码修改</span>
 					</el-menu-item>
 					<el-menu-item
-						style="margin-bottom: 56px;"
+						style="margin-bottom: 73px;"
 						v-if="hasPermission(5) || hasPermission(7) || hasPermission(4)"
 						index="scanEditInfo"
 						:route="{ name: 'scanEditInfo' }"
@@ -128,6 +129,7 @@
 						author @NoraH1to
 					</el-menu-item>
 				</el-menu>
+				</el-scrollbar>
 			</el-aside>
 			<el-container>
 				<el-header class="custom-el-header" style="height: 61px;">

@@ -47,8 +47,7 @@
 				:close-on-press-escape="false"
 				:show-close="false"
 				:destroy-on-close="false"
-				width="95%"
-				:center="true"
+				:fullscreen="true"
 				@closed="handlerDialogClose"
 			>
 				<relics ref="relics" :simple="true" :id="dialogFormModel.id" @hasNotData="handlerHasNotData" />
@@ -63,7 +62,6 @@
 				:close-on-press-escape="false"
 				:show-close="false"
 				:fullscreen="true"
-				:center="true"
 			>
 				<div
 					class="container-vertical-center container-horizontal-center"
@@ -76,10 +74,12 @@
 						v-for="value in dialogModelList"
 						:key="value"
 						:label="api.relicsList.attrMap[value].value"
+						style="width: 100%;"
 					>
 						<el-select
 							v-if="api.relicsList.attrMap[value].type === 'Select'"
 							v-model="dialogFormModel[value]"
+							style="width: 100%;"
 							clearable
 						>
 							<el-option
@@ -95,6 +95,7 @@
 							v-model="dialogFormModel[value]"
 							@visible-change="getOptions(arguments, value)"
 							@change="handlerOptionChange(value)"
+							style="width: 100%;"
 							clearable
 						>
 							<el-option
@@ -104,7 +105,7 @@
 								:label="value.name"
 							></el-option>
 						</el-select>
-						<el-input v-else v-model="dialogFormModel[value]"></el-input>
+						<el-input v-else v-model="dialogFormModel[value]" style="width: 100%;"></el-input>
 					</el-form-item>
 				</el-form>
 				<div slot="footer" class="dialog-footer">

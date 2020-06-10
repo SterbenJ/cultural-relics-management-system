@@ -5,15 +5,15 @@
 				手动输入ID
 			</el-button>
 		</div>
-		<el-dialog :visible.sync="showInputIdDialog" title="手动输入ID">
+		<el-dialog :visible.sync="showInputIdDialog" title="手动输入ID" width="90%">
 			<el-form
 				label-position="top"
 				ref="dialogFormRef"
 				:model="dialogFormModel"
 				:rules="dialogFormRules"
 			>
-				<el-form-item prop="userInputId" label="ID">
-					<el-input-number v-model="dialogFormModel.userInputId"></el-input-number>
+				<el-form-item prop="userInputId" label="ID" style="width: 100%;">
+					<el-input-number style="width: 100%;" v-model="dialogFormModel.userInputId"></el-input-number>
 				</el-form-item>
 			</el-form>
 			<div slot="footer">

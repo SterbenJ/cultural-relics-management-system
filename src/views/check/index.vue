@@ -47,14 +47,14 @@
 				:close-on-press-escape="false"
 				:show-close="true"
 				:destroy-on-close="false"
-				width="95%"
-				:center="true"
+				:fullscreen="true"
 				@closed="handlerDialogClose"
 			>
 				<relics :simple="true" :id="dialogFormModel.relicsId" />
 				<el-form label-position="top" ref="dialogFormRef" :model="dialogFormModel">
-					<el-form-item prop="warehouseId" :label="api.check.attrMap.warehouseId.value">
+					<el-form-item style="width: 100%;" prop="warehouseId" :label="api.check.attrMap.warehouseId.value">
 						<el-select
+							style="width: 100%;"
 							:loading="warehouseOptionLoading"
 							clearable
 							v-model="dialogFormModel.warehouseId"
@@ -70,8 +70,9 @@
 							></el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item prop="shelfId" :label="api.check.attrMap.shelfId.value">
+					<el-form-item style="width: 100%;" prop="shelfId" :label="api.check.attrMap.shelfId.value">
 						<el-select
+							style="width: 100%;"
 							:loading="shelfOptionLoading"
 							clearable
 							v-model="dialogFormModel.shelfId"
@@ -89,17 +90,17 @@
 				</el-form>
 				<div slot="footer" class="dialog-footer">
 					<el-button
+						@click="showInfoDialog = false"
+					>
+						取 消
+					</el-button>
+					<el-button
 						type="primary"
 						:loading="dialogLoading"
 						:disabled="dialogLoading"
 						@click="confirmCheckMsg"
 					>
 						确 定
-					</el-button>
-					<el-button
-						@click="showInfoDialog = false"
-					>
-						取 消
 					</el-button>
 				</div>
 			</el-dialog>

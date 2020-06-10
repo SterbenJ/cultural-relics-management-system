@@ -289,7 +289,8 @@ export default {
 		// 创建特殊情况
 		checkRelics() {
 			return {
-				display: this.isCreateRelics ? 'none' : 'inline'
+				display: this.isCreateRelics ? 'none' : 'inline',
+				width: '100%'
 			}
 		}
 	},
@@ -362,6 +363,9 @@ export default {
 											input: function(event) {
 												vm.dialogFormModel[mprop] = event
 											}
+										},
+										style: {
+											width: '100%'
 										}
 									},
 									selectArr
@@ -408,6 +412,9 @@ export default {
 											input: function(event) {
 												vm.dialogFormModel[mprop] = event
 											}
+										},
+										style: {
+											width: '100%'
 										}
 									},
 									selectArr
@@ -498,6 +505,9 @@ export default {
 													] = ''
 												}
 											}
+										},
+										style: {
+											width: '100%'
 										}
 									},
 									selectArr
@@ -525,6 +535,9 @@ export default {
 										input: function(event) {
 											vm.dialogFormModel[mprop] = event
 										}
+									},
+									style: {
+										width: '100%'
 									}
 								})
 							]
@@ -579,7 +592,7 @@ export default {
 					props: {
 						'destroy-on-close': true,
 						title: vm.dialogFormModel.id ? '编辑' : '新增',
-						width: '40%',
+						fullscreen: true,
 						'before-close': vm.handleDialogClose,
 						visible: vm.dialogVisible
 					},
@@ -1202,7 +1215,8 @@ export default {
 								props: {
 									model: vm.formModel,
 									inline: true,
-									'label-position': 'left'
+									'label-position': 'left',
+									'label-width': '80px'
 								},
 								on: {
 									input: function() {

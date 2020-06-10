@@ -23,7 +23,7 @@ function escapeAttr(data) {
  *  其它
  */
 
-// 获得仓库ID列表
+// 获得仓库列表
 function warehousesIdList() {
 	return axios({
 		url: '/warehouses',
@@ -31,7 +31,7 @@ function warehousesIdList() {
 	})
 }
 
-// 获得货架ID列表
+// 获得货架列表
 function shelfIdList(id) {
 	return axios({
 		url: '/shelves',
@@ -440,7 +440,7 @@ export default {
 				permission: [5]
 			},
 			warehouseId: {
-				value: '收储仓库ID',
+				value: '仓库',
 				type: 'remoteSelect',
 				owner: ['edit'],
 				permission: [9],
@@ -448,27 +448,27 @@ export default {
 				selectChild: 'shelfId'
 			},
 			warehouseName: {
-				value: '收储仓库',
+				value: '仓库',
 				type: 'String',
 				owner: ['result'],
 				permission: [9]
 			},
 			warehouse: {
-				value: '仓库ID',
+				value: '仓库',
 				type: 'remoteSelect',
 				owner: ['form'],
 				remoteSelectApi: warehousesIdList,
 				selectChild: 'shelf'
 			},
 			shelf: {
-				value: '货架ID',
+				value: '货架',
 				type: 'remoteSelect',
 				owner: ['form'],
 				remoteSelectApi: shelfIdList,
 				selectParent: 'warehouse'
 			},
 			shelfId: {
-				value: '收储货架ID',
+				value: '货架',
 				type: 'remoteSelect',
 				owner: ['edit'],
 				permission: [9],
@@ -476,7 +476,7 @@ export default {
 				selectParent: 'warehouseId'
 			},
 			shelfName: {
-				value: '收储货架',
+				value: '货架',
 				type: 'String',
 				owner: ['result'],
 				permission: [9]
@@ -799,7 +799,7 @@ export default {
 				owner: ['result', 'edit', 'form']
 			},
 			warehouseId: {
-				value: '仓库ID',
+				value: '仓库',
 				type: 'remoteSelect',
 				owner: ['edit', 'form'],
 				remoteSelectApi: warehousesIdList
@@ -874,9 +874,10 @@ export default {
 				owner: ['result']
 			},
 			warehouseId: {
-				value: '盘点仓库ID',
-				type: 'Number',
-				owner: ['form']
+				value: '盘点仓库',
+				type: 'remoteSelect',
+				owner: ['form'],
+				remoteSelectApi: warehousesIdList
 			},
 			warehouseName: {
 				value: '盘点仓库名',
@@ -1068,13 +1069,13 @@ export default {
 		},
 		attrMap: {
 			warehouseId: {
-				value: '当前仓库ID',
-				type: 'Number',
+				value: '当前仓库',
+				type: 'remoteSelect',
 				owner: ['edit']
 			},
 			shelfId: {
-				value: '当前货架ID',
-				type: 'Number',
+				value: '当前货架',
+				type: 'remoteSelect',
 				owner: ['edit']
 			}
 		}

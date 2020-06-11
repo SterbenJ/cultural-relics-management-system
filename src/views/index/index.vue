@@ -93,41 +93,55 @@
 							<span slot="title">成员管理</span>
 						</el-menu-item>
 						<!-- 新建盘点入口 -->
-						<el-menu-item
-							v-if="hasPermission(8)"
-							index="initCheck"
-							:route="{ name: 'initCheck' }"
-						>
-							<i class="el-icon-s-order"></i>
-							<span slot="title">盘点文物</span>
-						</el-menu-item>
-						<el-menu-item
-							v-if="hasPermission(8)"
-							index="initBatchEdit"
-							:route="{ name: 'initBatchEdit' }"
-						>
-							<i class="el-icon-s-order"></i>
-							<span slot="title">批量扫码修改</span>
-						</el-menu-item>
-						<el-menu-item
-							style="margin-bottom: 73px;"
-							v-if="hasPermission(5) || hasPermission(7) || hasPermission(4)"
-							index="scanEditInfo"
-							:route="{ name: 'scanEditInfo' }"
-						>
-							<i class="el-icon-edit"></i>
-							<span slot="title">扫码查看文物信息</span>
-						</el-menu-item>
+						<el-submenu index="4">
+							<template slot="title">
+								<i class="el-icon-s-order"></i>
+								<span slot="title">批量扫码操作</span>
+							</template>
+							<el-menu-item
+								v-if="hasPermission(8)"
+								index="initCheck"
+								:route="{ name: 'initCheck' }"
+							>
+								<i class="el-icon-s-order"></i>
+								<span slot="title">盘点文物</span>
+							</el-menu-item>
+							<el-menu-item
+								v-if="hasPermission(8)"
+								index="initBatchEditPosition"
+								:route="{ name: 'initBatchEditPosition' }"
+							>
+								<i class="el-icon-house"></i>
+								<span slot="title">批量修改文物仓库</span>
+							</el-menu-item>
+							<el-menu-item
+								v-if="hasPermission(8)"
+								index="initBatchEditState"
+								:route="{ name: 'initBatchEditState' }"
+							>
+								<i class="el-icon-s-flag"></i>
+								<span slot="title">批量修改文物状态</span>
+							</el-menu-item>
+							<el-menu-item
+								style="margin-bottom: 73px;"
+								v-if="hasPermission(5) || hasPermission(7) || hasPermission(4)"
+								index="scanEditInfo"
+								:route="{ name: 'scanEditInfo' }"
+							>
+								<i class="el-icon-edit"></i>
+								<span slot="title">查看/修改文物信息</span>
+							</el-menu-item>
+						</el-submenu>
 						<!-- <el-menu-item index="test" :route="{ name: 'test' }">
 							<span slot="title">测试</span>
 						</el-menu-item> -->
-						<el-menu-item
+						<!-- <el-menu-item
 							v-show="!collapsed"
 							@click="toAuthor"
 							class="author-item"
 						>
 							author @NoraH1to
-						</el-menu-item>
+						</el-menu-item> -->
 					</el-menu>
 				</el-scrollbar>
 			</el-aside>
@@ -245,7 +259,7 @@ export default {
 	font-weight 700
 	line-height 300%
 	color #fafdff
-	width 200px
+	width 100%
 // elementUI滚动条适配
 .el-scrollbar__view
 	height 100%
@@ -265,5 +279,5 @@ body, .el-scrollbar__wrap
 	position fixed
 	text-align center
 	bottom 0px
-	width 200px
+	width 225px
 </style>

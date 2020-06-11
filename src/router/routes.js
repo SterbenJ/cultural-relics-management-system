@@ -77,9 +77,14 @@ export default [{
 				component: () => import('../views/initCheck')
 			},
 			{
-				path: 'init-batch-edit',
-				name: 'initBatchEdit',
-				component: () => import('../views/initBatchEdit')
+				path: 'init-batch-edit-position',
+				name: 'initBatchEditPosition',
+				component: () => import('../views/initBatchEditPosition')
+			},
+			{
+				path: 'init-batch-edit-state',
+				name: 'initBatchEditState',
+				component: () => import('../views/initBatchEditState')
 			},
 			{
 				path: 'shelves-management',

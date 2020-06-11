@@ -224,7 +224,7 @@ export default {
 			if (Object.keys(this.$attrs).length > 0) {
 				this.dialogFormModel = { ...this.dialogFormModel, ...this.$attrs }
 				this.updateRelics()
-				this.openScan()
+				setTimeout(this.openScan(), 1000)
 				return
 			}
 			this.showInfoDialog = true

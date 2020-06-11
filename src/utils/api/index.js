@@ -506,7 +506,10 @@ export default {
 						5: '离馆'
 					}
 				},
-				permission: [6, 14]
+				permission: [6, 14],
+				needOtherAttr: {
+					2: ['warehouseId', 'shelfId']
+				}
 			},
 			lastCheckTime: {
 				value: '最后盘点时间',

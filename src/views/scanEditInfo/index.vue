@@ -5,6 +5,7 @@
 				<div id="check-action-container">
 					<div id="action">
 						<el-button
+							v-if="!Object.keys($attrs).length > 0"
 							style="box-shadow: 0px 0px 10px #e39931;"
 							class="font-title-extra-large check-dialog-action-button"
 							type="warning"
@@ -223,6 +224,7 @@ export default {
 			if (Object.keys(this.$attrs).length > 0) {
 				this.dialogFormModel = { ...this.dialogFormModel, ...this.$attrs }
 				this.updateRelics()
+				this.openScan()
 				return
 			}
 			this.showInfoDialog = true

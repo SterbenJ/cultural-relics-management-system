@@ -4,7 +4,7 @@
 			<transition class="el-zoom-in-left">
 				<div id="check-action-container">
 					<div id="action">
-						<el-button
+						<!-- <el-button
 							style="box-shadow: 0px 0px 10px #e39931;"
 							class="font-title-extra-large check-dialog-action-button"
 							type="warning"
@@ -13,7 +13,7 @@
 							v-show="!scanning"
 						>
 							继续盘点
-						</el-button>
+						</el-button> -->
 						<el-button
 							style="box-shadow: 0px 0px 10px #d96767;"
 							class="font-title-extra-large check-dialog-action-button"
@@ -52,7 +52,11 @@
 			>
 				<relics :simple="true" :id="dialogFormModel.relicsId" />
 				<el-form label-position="top" ref="dialogFormRef" :model="dialogFormModel">
-					<el-form-item style="width: 100%;" prop="warehouseId" :label="api.check.attrMap.warehouseId.value">
+					<el-form-item
+						style="width: 100%;"
+						prop="warehouseId"
+						:label="api.check.attrMap.warehouseId.value"
+					>
 						<el-select
 							style="width: 100%;"
 							:loading="warehouseOptionLoading"
@@ -70,7 +74,11 @@
 							></el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item style="width: 100%;" prop="shelfId" :label="api.check.attrMap.shelfId.value">
+					<el-form-item
+						style="width: 100%;"
+						prop="shelfId"
+						:label="api.check.attrMap.shelfId.value"
+					>
 						<el-select
 							style="width: 100%;"
 							:loading="shelfOptionLoading"
@@ -89,11 +97,7 @@
 					</el-form-item>
 				</el-form>
 				<div slot="footer" class="dialog-footer">
-					<el-button
-						@click="showInfoDialog = false"
-					>
-						取 消
-					</el-button>
+					<el-button @click="showInfoDialog = false">取 消</el-button>
 					<el-button
 						type="primary"
 						:loading="dialogLoading"
@@ -128,6 +132,13 @@ export default {
 				this.dialogFormModel.checkId = newVal
 			},
 			immediate: true
+		},
+		showInfoDialog: {
+			handler(newVal, oldVal) {
+				if (!newVal) {
+					this.openScan()
+				}
+			}
 		}
 	},
 	data: () => ({
@@ -211,25 +222,31 @@ export default {
 		getWarehouseList() {
 			const vm = this
 			vm.warehouseOptionLoading = true
-			this.api.relicsList.attrMap.warehouseId.remoteSelectApi().then(res => {
-				vm.warehouseList = res.data.data
-				vm.warehouseOptionLoading = false
-			}).catch(err => {
-				console.log('get warehouse list fail', err);
-				vm.warehouseOptionLoading = false
-			})
+			this.api.relicsList.attrMap.warehouseId
+				.remoteSelectApi()
+				.then(res => {
+					vm.warehouseList = res.data.data
+					vm.warehouseOptionLoading = false
+				})
+				.catch(err => {
+					console.log('get warehouse list fail', err)
+					vm.warehouseOptionLoading = false
+				})
 		},
 		// 获得货架列表
 		getShelfList() {
 			const vm = this
 			vm.shelfOptionLoading = true
-			this.api.relicsList.attrMap.shelfId.remoteSelectApi(this.dialogFormModel.warehouseId).then(res => {
-				vm.shelfList = res.data.data
-				vm.shelfOptionLoading = false
-			}).catch(err => {
-				console.log('get shelf list fail', err);
-				vm.shelfOptionLoading = false
-			})
+			this.api.relicsList.attrMap.shelfId
+				.remoteSelectApi(this.dialogFormModel.warehouseId)
+				.then(res => {
+					vm.shelfList = res.data.data
+					vm.shelfOptionLoading = false
+				})
+				.catch(err => {
+					console.log('get shelf list fail', err)
+					vm.shelfOptionLoading = false
+				})
 		},
 		// 监听仓库id变化
 		handlerWarehouseIdChange() {

@@ -1110,7 +1110,7 @@ export default {
 				remoteSelectApi: getUserList
 			},
 			itemType: {
-				value: '操作对象类型',
+				value: '操作类型',
 				type: 'Select',
 				owner: ['result', 'form'],
 				selectMap: function() {

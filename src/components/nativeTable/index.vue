@@ -1215,8 +1215,7 @@ export default {
 								props: {
 									model: vm.formModel,
 									inline: true,
-									'label-position': 'left',
-									'label-width': '80px'
+									'label-position': 'left'
 								},
 								on: {
 									input: function() {

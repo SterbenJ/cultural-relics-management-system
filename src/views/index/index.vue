@@ -93,7 +93,7 @@
 							<span slot="title">成员管理</span>
 						</el-menu-item>
 						<!-- 新建盘点入口 -->
-						<el-submenu index="4">
+						<el-submenu index="4" style="margin-bottom: 73px;">
 							<template slot="title">
 								<i class="el-icon-s-order"></i>
 								<span slot="title">批量扫码操作</span>
@@ -123,7 +123,6 @@
 								<span slot="title">批量修改文物状态</span>
 							</el-menu-item>
 							<el-menu-item
-								style="margin-bottom: 73px;"
 								v-if="hasPermission(5) || hasPermission(7) || hasPermission(4)"
 								index="scanEditInfo"
 								:route="{ name: 'scanEditInfo' }"
@@ -135,13 +134,13 @@
 						<!-- <el-menu-item index="test" :route="{ name: 'test' }">
 							<span slot="title">测试</span>
 						</el-menu-item> -->
-						<!-- <el-menu-item
+						<el-menu-item
 							v-show="!collapsed"
 							@click="toAuthor"
 							class="author-item"
 						>
 							author @NoraH1to
-						</el-menu-item> -->
+						</el-menu-item>
 					</el-menu>
 				</el-scrollbar>
 			</el-aside>
@@ -259,7 +258,7 @@ export default {
 	font-weight 700
 	line-height 300%
 	color #fafdff
-	width 100%
+	width 230px
 // elementUI滚动条适配
 .el-scrollbar__view
 	height 100%
@@ -279,5 +278,5 @@ body, .el-scrollbar__wrap
 	position fixed
 	text-align center
 	bottom 0px
-	width 225px
+	width 230px
 </style>

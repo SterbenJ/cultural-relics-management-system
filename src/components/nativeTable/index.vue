@@ -29,7 +29,9 @@ export default {
 			loading: true,
 			hasFormChange: false,
 			remoteOptions: {},
-			remoteOptionsState: {}
+			remoteOptionsState: {},
+			printPicDialogVisible: false,
+			linkId: undefined
 		}
 	},
 	computed: {
@@ -292,6 +294,78 @@ export default {
 				display: this.isCreateRelics ? 'none' : 'inline',
 				width: '100%'
 			}
+		},
+		// 拼接二维码和图片
+		linkPicAndQr(picPath, qrPath, id) {
+			this.linkId = id
+			const canvas = this.$refs.linkPic2dCanvas
+			const context = canvas.getContext('2d')
+			const picWidth = 350
+			const picHeight = 350
+			const marginTop = 10
+			const marginBetween = 50
+			let drawPicWidth = picWidth
+			let drawPicHeight = picHeight
+			const qrWidth = 300
+			const qrHeight = 300
+			context.rect(0, 0, canvas.width, canvas.height)
+			context.fillStyle = '#fff'
+			context.fill()
+			const myImage = new Image()
+			myImage.src = picPath
+			myImage.crossOrigin = 'Anonymous'
+			myImage.onload = function() {
+				console.log('height', myImage.height)
+				console.log('width', myImage.width)
+				// 不是正方形，等比例缩小到适应大小
+				if (myImage.height !== myImage.width) {
+					const height = myImage.height
+					const width = myImage.width
+					if (height > width) {
+						drawPicWidth = (picHeight / height) * width
+					} else {
+						drawPicHeight = (picWidth / width) * height
+					}
+				}
+				context.drawImage(
+					myImage,
+					0 + (picWidth - drawPicWidth) / 2,
+					marginTop + (picHeight - drawPicHeight) / 2,
+					drawPicWidth,
+					drawPicHeight
+				)
+				context.fillStyle = '#111111'
+				context.font = '50px Courier New'
+				context.textAlign = 'center'
+				context.fillText(id, picWidth + marginBetween + qrWidth / 2, picHeight, qrWidth)
+				const myImage2 = new Image()
+				myImage2.src = qrPath
+				myImage2.crossOrigin = 'Anonymous'
+				myImage2.onload = function() {
+					context.drawImage(
+						myImage2,
+						picWidth + marginBetween,
+						marginTop,
+						qrWidth,
+						qrHeight
+					)
+				}
+			}
+		},
+		// 下载拼接好的图片
+		downloadPrintPic() {
+			var canvasElement = this.$refs.linkPic2dCanvas
+			var MIME_TYPE = 'image/png'
+			var imgURL = canvasElement.toDataURL(MIME_TYPE)
+			var dlLink = document.createElement('a')
+
+			dlLink.download = this.linkId
+			dlLink.href = imgURL
+			dlLink.dataset.downloadurl = [MIME_TYPE, dlLink.download, dlLink.href].join(':')
+
+			document.body.appendChild(dlLink)
+			dlLink.click()
+			document.body.removeChild(dlLink)
 		}
 	},
 	render: function(h) {
@@ -487,14 +561,18 @@ export default {
 															)
 															vm.remoteOptions[mprop + 'Options'] =
 																res.data.data
-															vm.remoteOptionsState[mprop + 'Loading'] = false
+															vm.remoteOptionsState[
+																mprop + 'Loading'
+															] = false
 														})
 														.catch(err => {
 															console.log(
 																'get ' + mprop + ' options fail',
 																err
 															)
-															vm.remoteOptionsState[mprop + 'Loading'] = false
+															vm.remoteOptionsState[
+																mprop + 'Loading'
+															] = false
 														})
 												}
 											},
@@ -848,14 +926,18 @@ export default {
 															)
 															vm.remoteOptions[mprop + 'Options'] =
 																res.data.data
-															vm.remoteOptionsState[mprop + 'Loading'] = false
+															vm.remoteOptionsState[
+																mprop + 'Loading'
+															] = false
 														})
 														.catch(err => {
 															console.log(
 																'get ' + mprop + ' options fail',
 																err
 															)
-															vm.remoteOptionsState[mprop + 'Loading'] = false
+															vm.remoteOptionsState[
+																mprop + 'Loading'
+															] = false
 														})
 												}
 											},
@@ -977,13 +1059,79 @@ export default {
 											width: '100px',
 											height: '100px'
 										},
+										ref: String(scope.row.id),
 										props: {
 											margin: 5,
 											dotScale: 1,
 											size: 100,
 											text: '#' + scope.row.id + '#'
+										},
+										nativeOn: {
+											click: function(e) {
+												e.stopPropagation()
+												vm.printPicDialogVisible = true
+												vm.$nextTick(() => {
+													vm.linkPicAndQr(
+														vm.api.utils.realUrlWithoutApi(
+															scope.row.picturePath
+														),
+														vm.$refs[String(scope.row.id)].$el
+															.currentSrc,
+														scope.row.id
+													)
+												})
+											}
 										}
-									})
+									}),
+									h(
+										'el-dialog',
+										{
+											props: {
+												'destroy-on-close': true,
+												title: '打印',
+												fullscreen: true,
+												visible: vm.printPicDialogVisible,
+												'append-to-body': true,
+												center: true
+											},
+											on: {
+												'update:visible': function(event) {
+													vm.printPicDialogVisible = event
+												}
+											}
+										},
+										[
+											h('canvas', {
+												attrs: {
+													id: 'linkPic2dCanvas',
+													width: '700',
+													height: '370'
+												},
+												ref: 'linkPic2dCanvas',
+												style: {
+													width: '100%'
+												}
+											}),
+											h(
+												'span',
+												{
+													slot: 'footer'
+												},
+												[
+													h('el-button', {
+														domProps: {
+															innerHTML: '打 印'
+														},
+														on: {
+															click: function(event) {
+																vm.downloadPrintPic()
+															}
+														}
+													})
+												]
+											)
+										]
+									)
 								]
 							}
 						}
@@ -1101,7 +1249,7 @@ export default {
 											},
 											on: {
 												click: function(e) {
-													event.stopPropagation()
+													e.stopPropagation()
 													for (const mprop of vm.dialogModelList) {
 														if (scope.row[mprop]) {
 															vm.dialogFormModel[mprop] =
@@ -1146,7 +1294,7 @@ export default {
 													},
 													on: {
 														click: function(e) {
-															event.stopPropagation()
+															e.stopPropagation()
 															// const tmpList = Object.keys(scope.row)
 															// for (const mprop of tmpList) {
 															// 	vm.dialogFormModel[mprop] =

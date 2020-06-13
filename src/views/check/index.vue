@@ -191,6 +191,9 @@ export default {
 				})
 				.catch(err => {
 					console.log('finish check fail', err)
+					vm.$router.push({
+						name: 'login'
+					})
 				})
 		},
 		// 确认盘点信息

@@ -44,7 +44,6 @@ function shelfIdList(id) {
 
 // 根据环境转换url
 function translateUrlWithoutApi(url) {
-	console.log('translateUrlWithoutApi', config.host + url);
 	return config.host + url
 }
 

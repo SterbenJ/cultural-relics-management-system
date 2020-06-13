@@ -82,9 +82,6 @@ export default {
 					const link = document.createElement('a')
 					link.style.display = 'none'
 					link.href = url
-					console.log(
-						res.headers['content-disposition']
-					)
 					link.setAttribute(
 						'download',
 						decodeURI(res.headers[

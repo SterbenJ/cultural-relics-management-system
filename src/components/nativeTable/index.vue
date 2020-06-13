@@ -359,7 +359,7 @@ export default {
 			var imgURL = canvasElement.toDataURL(MIME_TYPE)
 			var dlLink = document.createElement('a')
 
-			dlLink.download = this.linkId
+			dlLink.download = this.linkId + '.png'
 			dlLink.href = imgURL
 			dlLink.dataset.downloadurl = [MIME_TYPE, dlLink.download, dlLink.href].join(':')
 
@@ -1092,7 +1092,8 @@ export default {
 												fullscreen: true,
 												visible: vm.printPicDialogVisible,
 												'append-to-body': true,
-												center: true
+												center: true,
+												modal: false
 											},
 											on: {
 												'update:visible': function(event) {

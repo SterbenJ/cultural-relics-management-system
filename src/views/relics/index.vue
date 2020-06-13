@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<el-row id="relics-container">
+		<el-row v-show="hasData" id="relics-container">
 			<el-col :span="22" :offset="1">
 				<el-row :gutter="20">
 					<el-col v-if="!simple" :span="10" :offset="2">
@@ -36,6 +36,9 @@
 				</el-row>
 			</el-col>
 		</el-row>
+		<div v-if="!hasData" class="container-vertical-center container-horizontal-center font-title-medium">
+			没有数据
+		</div>
 	</div>
 </template>
 
@@ -59,6 +62,7 @@ export default {
 		return {
 			loading: true,
 			dataInTable: [],
+			hasData: false,
 			relicsData: {
 				id: 1, // 文物编号
 				name: 'wdnmd', // 文物名称
@@ -118,13 +122,14 @@ export default {
 				})
 				.then(res => {
 					console.log('get relics success');
+					vm.hasData = true
 					vm.relicsData = res.data.data
 					vm.translateToTable(vm.relicsData)
 					vm.loading = false
-					
 				})
 				.catch(err => {
 					console.log('get relics fail', err)
+					vm.hasData = false
 					vm.$emit('hasNotData')
 					vm.loading = false
 				})

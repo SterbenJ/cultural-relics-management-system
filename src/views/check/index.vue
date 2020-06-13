@@ -50,7 +50,7 @@
 				:fullscreen="true"
 				@closed="handlerDialogClose"
 			>
-				<relics :simple="true" :id="dialogFormModel.relicsId" />
+				<relics @hasNotData="showInfoDialog = false" :simple="true" :id="dialogFormModel.relicsId" />
 				<el-form label-position="top" ref="dialogFormRef" :model="dialogFormModel">
 					<el-form-item
 						style="width: 100%;"
@@ -115,6 +115,7 @@
 <script>
 import scan from '../../components/scan'
 import relics from '../relics'
+import { Message } from 'element-ui'
 export default {
 	props: {
 		id: {
@@ -202,6 +203,7 @@ export default {
 					this.dialogLoading = false
 					this.showInfoDialog = false
 					console.log('check success')
+					Message.success('成功')
 				})
 				.catch(err => {
 					this.dialogLoading = false

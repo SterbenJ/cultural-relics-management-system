@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<scan @scanning="handlerScanning" @getCode="afterGetCode" ref="scan">
+		<scan @errorCode="handlerErrorCode" @scanning="handlerScanning" @getCode="afterGetCode" ref="scan">
 			<transition class="el-zoom-in-left">
 				<div id="check-action-container">
 					<div id="action">
@@ -137,7 +137,11 @@ export default {
 	computed: {
 		...mapGetters({
 			hasPermission: 'user/hasPermission'
-		})
+		}),
+		// 批量修改
+		isBatchEdit() {
+			return Object.keys(this.$attrs).length > 0
+		}
 	},
 	data: () => ({
 		// 是否正在扫描
@@ -168,7 +172,7 @@ export default {
 					return this.api.relicsList.attrMap[value].owner.indexOf('edit') !== -1
 				})
 				.forEach((currentValue, index, arr) => {
-					this.$set(this.dialogFormModel, currentValue, '')
+					this.$set(this.dialogFormModel, currentValue, null)
 					if (currentValue !== 'id') {
 						if (!this.api.relicsList.attrMap[currentValue].permission) {
 							iList.push(currentValue)
@@ -197,6 +201,14 @@ export default {
 				})
 			this.$set(this.$data, 'dialogModelList', iList)
 		},
+		// 监听错误二维码
+		handlerErrorCode() {
+			if (this.isBatchEdit) {
+				setTimeout(() => {
+					this.openScan()
+				}, 1000)
+			}
+		},
 		// 监听扫码暂停开始
 		handlerScanning(value) {
 			this.scanning = value
@@ -206,7 +218,7 @@ export default {
 		// 打开编辑dialog
 		openEditDialog() {
 			for (const key of this.dialogModelList) {
-				this.dialogFormModel[key] = this.$refs.relics.relicsData[key]
+				this.dialogFormModel[key] = this.$refs.relics.relicsData[key] ? this.$refs.relics.relicsData[key] : null
 			}
 			this.showEditDialog = true
 		},
@@ -221,10 +233,12 @@ export default {
 		afterGetCode(targetId) {
 			this.dialogFormModel.id = targetId
 			// 若有参数就批量修改
-			if (Object.keys(this.$attrs).length > 0) {
-				this.dialogFormModel = { ...this.dialogFormModel, ...this.$attrs }
+			if (this.isBatchEdit) {
+				this.dialogFormModel = { ...this.$attrs, ...{ id: targetId } }
 				this.updateRelics()
-				setTimeout(this.openScan(), 1000)
+				setTimeout(() => {
+					this.openScan()
+				}, 3000)
 				return
 			}
 			this.showInfoDialog = true

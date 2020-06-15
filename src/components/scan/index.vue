@@ -200,6 +200,7 @@ export default {
 			}
 			if (!targetId) {
 				Message.error('数据有误，请重新扫码')
+				this.$emit('errorCode')
 				return
 			}
 			this.$emit('getCode', targetId)

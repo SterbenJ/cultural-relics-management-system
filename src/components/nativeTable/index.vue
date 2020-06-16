@@ -73,7 +73,18 @@ export default {
 		},
 		...mapGetters({
 			hasPermission: 'user/hasPermission'
-		})
+		}),
+		// 检索表单是否有数据
+		hasDataInForm() {
+			for (const item in this.formModel) {
+				if (item !== 'page' && item !== 'count') {
+					if (this.formModel[item] || this.formModel[item] === '') {
+						return true
+					}
+				}
+			}
+			return false
+		}
 	},
 	created() {
 		// 初始化数据
@@ -93,9 +104,24 @@ export default {
 			handler: function(newVal, oldVal) {
 				if (newVal.page === oldVal.page) {
 					this.hasFormChange = true
+					console.log('form change')
 				}
 			},
 			deep: true
+		},
+		// $router: {
+		// 	handler: function(newVal, oldVal) {
+		// 		console.log('router change')
+		// 		if (this.hasDataInForm) {
+		// 			this.getData()
+		// 		}
+		// 	},
+		// 	deep: true
+		// },
+		$route(to, from) {
+			if (to.name === 'culturalRelicsList' && this.hasDataInForm) {
+				this.getData()
+			}
 		}
 	},
 	methods: {
@@ -161,7 +187,7 @@ export default {
 						if (this.$attrs[currentValue]) {
 							this.$set(this.formModel, currentValue, this.$attrs[currentValue])
 						} else {
-							this.$set(this.formModel, currentValue, '')
+							this.$set(this.formModel, currentValue, null)
 						}
 						// 初始化远程加载selectOption
 						if (this.inNeedApi.attrMap[currentValue].type === 'remoteSelect') {
